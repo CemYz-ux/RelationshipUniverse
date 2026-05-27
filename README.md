@@ -2,7 +2,7 @@
 
 An interactive force-graph for mapping the people in your life. Built with D3.js — no framework, no build step, no backend.
 
-![graph overview](screenshots/01-graph.png)
+<img src="screenshots/01-graph.png" width="600">
 
 ## Quick start
 
@@ -10,13 +10,13 @@ An interactive force-graph for mapping the people in your life. Built with D3.js
 
 Type a name, pick a relationship type from the styled dropdown, optionally add a location, then hit **+ Add**.
 
-![type dropdown](screenshots/02-dropdown.png)
+<img src="screenshots/02-dropdown.png" width="500">
 
 ### 2. Inspect & edit
 
 Click any node to open the info panel. From there you can edit their details, add a connection to them, import their network, or remove them.
 
-![inspect panel](screenshots/03-inspect.png)
+<img src="screenshots/03-inspect.png" width="500">
 
 ### 3. Rearrange
 
