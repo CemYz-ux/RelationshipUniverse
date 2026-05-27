@@ -2,7 +2,27 @@
 
 An interactive force-graph for mapping the people in your life. Built with D3.js — no framework, no build step, no backend.
 
-![screenshot](screenshot.png)
+![graph overview](screenshots/01-graph.png)
+
+## Quick start
+
+### 1. Add someone
+
+Type a name, pick a relationship type from the styled dropdown, optionally add a location, then hit **+ Add**.
+
+![type dropdown](screenshots/02-dropdown.png)
+
+### 2. Inspect & edit
+
+Click any node to open the info panel. From there you can edit their details, add a connection to them, import their network, or remove them.
+
+![inspect panel](screenshots/03-inspect.png)
+
+### 3. Rearrange
+
+Drag nodes to reposition them. Scroll to zoom. The graph stays wherever you leave it — your data is saved automatically in `localStorage`.
+
+---
 
 ## Features
 
@@ -16,8 +36,8 @@ An interactive force-graph for mapping the people in your life. Built with D3.js
 
 ## Relationship types
 
-| Type | Color |
-|------|-------|
+| Type | Colour |
+|------|--------|
 | Partner | Lavender |
 | Friend | Pink |
 | Dating | Teal |
