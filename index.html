@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Relationship Universe</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>My Relationship Universe</h1>
+  <p>Click node to inspect · Drag to rearrange · Scroll to zoom</p>
+</header>
+
+<div id="graph-container">
+  <div class="blob" style="width:420px;height:420px;background:#c9b8ff;top:-120px;right:80px;"></div>
+  <div class="blob" style="width:320px;height:320px;background:#ff9eb5;bottom:-80px;left:60px;"></div>
+
+  <svg id="svg"></svg>
+
+  <div id="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#c9b8ff;"></div>Partner</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ff9eb5;"></div>Friend</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7dd4b8;"></div>Dating</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ff5c8a;"></div>Crush</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f4a868;"></div>Fling</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9999bb;"></div>Ex</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#aaaaaa;"></div>Other</div>
+  </div>
+
+  <!-- Import / Export bar -->
+  <div id="io-bar">
+    <button class="btn-io" onclick="exportJSON()">↓ Export JSON</button>
+    <button class="btn-io" onclick="document.getElementById('import-input').click()">↑ Import JSON</button>
+    <input id="import-input" type="file" accept=".json" style="display:none" onchange="importJSON(event)" />
+    <input id="import-network-input" type="file" accept=".json" style="display:none" onchange="importNetworkJSON(event)" />
+    <span id="import-feedback">✓ Imported!</span>
+    <button class="btn-io btn-io-danger" onclick="clearAll()">✕ Clear All</button>
+  </div>
+
+  <!-- Side panel: view + edit modes -->
+  <div id="side-panel">
+    <div id="sp-view"></div>
+    <div id="sp-edit">
+      <div class="edit-title" id="edit-title">Editing…</div>
+      <div class="edit-field">
+        <label class="edit-label">Name</label>
+        <input class="edit-input" id="edit-name" type="text" maxlength="24" />
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Type</label>
+        <select class="edit-input edit-select" id="edit-type">
+          <option value="partner">Partner</option>
+          <option value="friend">Friend</option>
+          <option value="dating">Dating</option>
+          <option value="crush">Crush</option>
+          <option value="fling">Fling</option>
+          <option value="ex">Ex</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Location</label>
+        <input class="edit-input" id="edit-location" type="text" maxlength="28" />
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Note</label>
+        <input class="edit-input" id="edit-note" type="text" maxlength="60" />
+      </div>
+      <div class="edit-actions">
+        <button class="btn-cancel-edit" onclick="cancelEdit()">Cancel</button>
+        <button class="btn-save" onclick="saveEdit()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add person panel -->
+  <div id="panel">
+    <span id="connect-to-label"></span>
+    <input id="name-input" type="text" placeholder="Name…" maxlength="22" />
+    <div class="panel-divider"></div>
+    <select id="type-select">
+      <option value="partner">Partner</option>
+      <option value="friend">Friend</option>
+      <option value="dating">Dating</option>
+      <option value="crush">Crush</option>
+      <option value="fling">Fling</option>
+      <option value="ex">Ex</option>
+      <option value="other">Other</option>
+    </select>
+    <div class="panel-divider"></div>
+    <input id="location-input" type="text" placeholder="Location…" maxlength="20" />
+    <div class="panel-divider"></div>
+    <button class="btn-add" id="btn-add-main" onclick="addPerson()">+ Add</button>
+    <button id="connect-cancel" onclick="cancelConnectMode()">✕</button>
+  </div>
+
+</div>
+
+<script src="graph.js"></script>
+</body>
+</html>
