@@ -202,11 +202,10 @@ function buildGraph() {
 
   simulation = d3.forceSimulation(nodes)
     .force('link', d3.forceLink(links).id(d => d.id)
-      .distance(d => d.secondary ? 110 : 165)
+      .distance(d => d.secondary ? 130 : 200)
       .strength(d  => d.secondary ? 0.7  : 0.5))
     .force('charge', d3.forceManyBody()
       .strength(d => d.parentId && d.parentId !== 'me' ? -180 : -300))
-    .force('center', d3.forceCenter(width / 2, height / 2))
     .force('collision', d3.forceCollide().radius(d => getSize(d.type) + 20))
     .on('tick', ticked);
 
@@ -372,7 +371,7 @@ function addPerson() {
   const id         = name.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
   const parentNode = nodes.find(n => n.id === (parentId || 'me'));
   const angle      = Math.random() * 2 * Math.PI;
-  const dist       = 120 + Math.random() * 60;
+  const dist       = 200 + Math.random() * 60;
   const px         = (parentNode && parentNode.x) ? parentNode.x : width  / 2;
   const py         = (parentNode && parentNode.y) ? parentNode.y : height / 2;
 
@@ -557,6 +556,34 @@ function showFeedback(msg) {
   }, 3000);
 }
 
+// ── Type dropdown ─────────────────────────────────────────────────────────────
+
+let typeDropdownOpen = false;
+
+function toggleTypeDropdown(e) {
+  e.stopPropagation();
+  typeDropdownOpen = !typeDropdownOpen;
+  document.getElementById('type-menu').classList.toggle('open', typeDropdownOpen);
+}
+
+function selectType(value) {
+  document.getElementById('type-select').value = value;
+  document.getElementById('type-dot').style.background = getColor(value);
+  document.getElementById('type-label').textContent = capitalize(value);
+  document.querySelectorAll('.td-option').forEach(o =>
+    o.classList.toggle('selected', o.dataset.value === value)
+  );
+  document.getElementById('type-menu').classList.remove('open');
+  typeDropdownOpen = false;
+}
+
+document.addEventListener('click', () => {
+  if (typeDropdownOpen) {
+    typeDropdownOpen = false;
+    document.getElementById('type-menu').classList.remove('open');
+  }
+});
+
 // ── Event listeners ───────────────────────────────────────────────────────────
 
 ['name-input', 'location-input'].forEach(id => {
@@ -572,7 +599,7 @@ window.addEventListener('resize', () => {
   const me = nodes.find(n => n.id === 'me');
   if (me) { me.fx = width / 2; me.fy = height / 2; }
   if (simulation) {
-    simulation.force('center', d3.forceCenter(width / 2, height / 2)).alpha(0.3).restart();
+    simulation.alpha(0.3).restart();
   }
 });
 

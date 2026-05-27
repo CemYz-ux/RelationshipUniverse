@@ -82,15 +82,23 @@
     <span id="connect-to-label"></span>
     <input id="name-input" type="text" placeholder="Name…" maxlength="22" />
     <div class="panel-divider"></div>
-    <select id="type-select">
-      <option value="partner">Partner</option>
-      <option value="friend">Friend</option>
-      <option value="dating">Dating</option>
-      <option value="crush">Crush</option>
-      <option value="fling">Fling</option>
-      <option value="ex">Ex</option>
-      <option value="other">Other</option>
-    </select>
+    <div id="type-dropdown" class="type-dropdown">
+      <button type="button" class="type-dropdown-btn" onclick="toggleTypeDropdown(event)">
+        <span id="type-dot" class="td-dot" style="background:#c9b8ff"></span>
+        <span id="type-label">Partner</span>
+        <span class="td-chevron">▾</span>
+      </button>
+      <div id="type-menu" class="type-dropdown-menu">
+        <div class="td-option selected" data-value="partner" onclick="selectType('partner')"><span class="td-dot" style="background:#c9b8ff"></span>Partner</div>
+        <div class="td-option" data-value="friend"  onclick="selectType('friend')" ><span class="td-dot" style="background:#ff9eb5"></span>Friend</div>
+        <div class="td-option" data-value="dating"  onclick="selectType('dating')" ><span class="td-dot" style="background:#7dd4b8"></span>Dating</div>
+        <div class="td-option" data-value="crush"   onclick="selectType('crush')"  ><span class="td-dot" style="background:#ff5c8a"></span>Crush</div>
+        <div class="td-option" data-value="fling"   onclick="selectType('fling')"  ><span class="td-dot" style="background:#f4a868"></span>Fling</div>
+        <div class="td-option" data-value="ex"      onclick="selectType('ex')"     ><span class="td-dot" style="background:#9999bb"></span>Ex</div>
+        <div class="td-option" data-value="other"   onclick="selectType('other')"  ><span class="td-dot" style="background:#aaaaaa"></span>Other</div>
+      </div>
+    </div>
+    <input type="hidden" id="type-select" value="partner">
     <div class="panel-divider"></div>
     <input id="location-input" type="text" placeholder="Location…" maxlength="20" />
     <div class="panel-divider"></div>
