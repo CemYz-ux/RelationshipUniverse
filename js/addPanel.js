@@ -45,18 +45,15 @@ export function addPerson() {
 
 export function startConnectMode(nodeId, nodeName) {
   state.connectMode = nodeId;
-  document.getElementById('connect-to-label').textContent   = `→ ${nodeName}:`;
-  document.getElementById('connect-to-label').style.display = 'block';
-  document.getElementById('connect-cancel').style.display   = 'block';
+  document.getElementById('connect-to-label').textContent = `→ ${nodeName}:`;
   document.getElementById('name-input').focus();
 }
 
 export function cancelConnectMode() {
   state.connectMode = null;
-  document.getElementById('connect-to-label').style.display = 'none';
-  document.getElementById('connect-cancel').style.display   = 'none';
-  document.getElementById('name-input').value               = '';
-  document.getElementById('location-input').value           = '';
+  document.getElementById('connect-to-label').textContent = '→ You:';
+  document.getElementById('name-input').value             = '';
+  document.getElementById('location-input').value         = '';
 }
 
 // Enter key on inputs

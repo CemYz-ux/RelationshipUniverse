@@ -225,18 +225,4 @@
   color: var(--accent);
   letter-spacing: 0.02em;
   flex-shrink: 0;
-  display: none;
 }
-
-#connect-cancel {
-  font-size: 11px;
-  color: var(--text-dim);
-  cursor: pointer;
-  flex-shrink: 0;
-  display: none;
-  background: none;
-  border: none;
-  font-family: 'DM Sans', sans-serif;
-  padding: 0;
-}
-#connect-cancel:hover { color: var(--text); }
