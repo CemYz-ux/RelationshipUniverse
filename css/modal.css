@@ -37,8 +37,9 @@
 }
 
 #qr-code {
+  background: #ffffff;
   border-radius: 12px;
-  overflow: hidden;
+  padding: 12px;        /* quiet zone — scanners need white space around the code */
   line-height: 0;
 }
 

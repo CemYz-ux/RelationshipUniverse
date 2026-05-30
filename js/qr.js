@@ -9,11 +9,11 @@ export async function showQRCode() {
     const url = await generateShareURL();
     new QRCode(container, {
       text:         url,
-      width:        220,
-      height:       220,
-      colorDark:    '#0d0d12',
+      width:        280,
+      height:       280,
+      colorDark:    '#000000',
       colorLight:   '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
+      correctLevel: QRCode.CorrectLevel.L  // lowest error correction = least dense = easier to scan
     });
   } catch (err) {
     container.textContent = 'Could not generate QR: ' + err.message;
@@ -122,7 +122,7 @@ function _scanWithJsQR(video, status) {
       try {
         const img  = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const code = jsQR(img.data, img.width, img.height, {
-          inversionAttempts: 'dontInvert'
+          inversionAttempts: 'attemptBoth'
         });
         if (code && code.data.includes('#share=')) {
           _onCodeFound(code.data, status);
