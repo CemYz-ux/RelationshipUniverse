@@ -41,17 +41,13 @@ export function showPanel(e, d) {
     <div class="tt-actions">
       <button class="btn-tt btn-tt-neutral" onclick="openEdit('${d.id}')">✎ Edit ${isMe ? 'your info' : d.name}</button>
       ${!isMe ? `<button class="btn-tt btn-tt-danger" onclick="removePerson('${d.id}')">Remove ${d.name}</button>` : ''}
+      <button class="btn-tt btn-tt-import" onclick="showImportModal('${d.id}')">↑ Import via link or QR</button>
       <div class="tt-overflow">
         <button class="btn-tt btn-tt-neutral tt-overflow-btn" onclick="togglePanelOverflow(event)">⋯ More</button>
         <div class="tt-overflow-menu">
           <button class="overflow-item" onclick="triggerNetworkImport('${d.id}'); closePanelOverflow()">↑ Import ${isMe ? 'your' : d.name + "'s"} network (JSON)</button>
         </div>
       </div>
-    </div>
-    <div class="tt-divider"></div>
-    <div class="tt-url-import">
-      <input class="tt-url-input" type="text" placeholder="Paste share URL to import…" id="sp-url-input" />
-      <button class="btn-tt btn-tt-import" onclick="importFromURL('${d.id}')">↑ Import</button>
     </div>`;
 
   dom.spEl.classList.add('visible');

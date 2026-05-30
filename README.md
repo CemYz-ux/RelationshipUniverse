@@ -6,7 +6,7 @@ An interactive force-graph for mapping the people in your life. Built with D3.js
 
 ### 1. Set yourself up
 
-Click the **You** node → **✎** → edit your name and location. This is your identity — it's used to deduplicate you when someone imports your network.
+Click the **You** node → **✎** → **✎ Edit your info** → set your name and location. This is your identity — used to deduplicate you when someone imports your network.
 
 ### 2. Add someone
 
@@ -14,7 +14,7 @@ The add panel at the bottom always shows the current target (`→ You:` by defau
 
 ### 3. Select a node
 
-**Click any node** to select it as the active add target. The add panel updates to `→ NodeName:` — your next add connects directly to that person. A small bubble also appears with two actions:
+**Click any node** to select it as the add target. The add panel updates to `→ NodeName:`. A bubble appears with two actions:
 
 - **⇌** — link this node to another existing node
 - **✎** — open the details panel
@@ -23,36 +23,48 @@ Clicking the background deselects and returns to `→ You:`.
 
 ### 4. Connect existing nodes
 
-Click a node → **⇌** in the bubble → click any other node. All connections are equal and removable via **✕** in the details panel.
+Click a node → **⇌** → click any other node. Connections are removable via **✕** in the details panel.
 
 ### 5. Details panel (✎)
 
-Click a node → **✎** to open the side panel:
+| Button | Action |
+|--------|--------|
+| **✎ Edit** | Update name, type, location, note |
+| **Remove** | Delete node and all its connections |
+| **↑ Import via link or QR** | Open the import modal (see below) |
+| **⋯ More** | Import this person's network from a JSON file |
 
-- **✎ Edit** — update name, type, location, note
-- **Remove** — delete the node and all its connections
-- **⋯ More** → Import this person's network from a JSON file
-- **Paste share URL** field at the bottom — import a shared network anchored to this node
+### 6. Import modal
 
-### 6. Top bar
+Opened via **↑ Import via link or QR** in the details panel. Two ways to import:
+
+- **Paste a share URL** into the input field and press Enter or click ↑ Import
+- **Scan a QR code** — the camera activates automatically and detects a share QR code
+
+The imported network merges anchored to the node you opened the panel from, with full deduplication by name + location.
+
+### 7. Top bar
 
 | Button | Action |
 |--------|--------|
-| **⤴ Share** | Compress & encode the graph into a URL, copy to clipboard |
+| **⤴ Share** | Compress graph into a URL and copy to clipboard |
+| **⊡ QR** | Show your graph as a scannable QR code |
 | **✕ Clear** | Remove all nodes and connections (with confirmation) |
 | **⋯** | Backup (export JSON) · Restore (import JSON) |
 
-### 7. Share & import
+### 8. Share & import flows
 
-**Sharing:**
-Click **⤴ Share** → URL copied to clipboard → send to anyone. When they open it, they're prompted to import it.
+**Share your network:**
+- **⤴ Share** → copies URL to clipboard → paste anywhere
+- **⊡ QR** → shows a QR code → someone scans it with the import modal
 
-**Importing another person's network:**
-Click their node → **✎** → paste their share URL in the field at the bottom → **↑ Import**. Their people merge into your graph, anchored to their node, with full deduplication by name + location.
+**Import someone's network:**
+- Click their node → **✎** → **↑ Import via link or QR**
+- Paste their share URL, or scan their QR code with your camera
 
-> **Note:** Share URLs work well for small-to-medium graphs. Very large graphs produce long URLs that some messaging apps may truncate. Use **⋯ → Backup JSON** for large graphs or permanent backups.
+> **Note:** Share URLs work well for small-to-medium graphs. Very large graphs produce long URLs that may be truncated by some messaging apps. Use **⋯ → Backup JSON** for large graphs or permanent backups.
 
-### 8. Rearrange
+### 9. Rearrange
 
 Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automatically in `localStorage`.
 
@@ -61,14 +73,15 @@ Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automaticall
 ## Features
 
 - **Click-to-select** — clicking a node sets it as the add target
-- **Node bubble** — quick **⇌** (link existing) and **✎** (details) actions
+- **Node bubble** — **⇌** (link existing) and **✎** (details) on tap
 - **Peer connections** — link any two nodes; symmetric and removable
-- **Share via URL** — compressed base64 share links, no backend needed
-- **Smart merge** — imports deduplicate by name + location (including yourself)
+- **Share via URL** — compressed base64 share links
+- **QR code share** — show your graph as a QR code for in-person sharing
+- **QR code scan** — camera-based import in the import modal
+- **Smart merge** — deduplicates by name + location (including yourself)
 - **Export filename** — `<Name>-<Location>-Network.json`
-- **Consolidated UI** — Share and Clear prominent; JSON backup/restore behind ⋯
-- **Mobile-friendly** — responsive, safe-area aware (home bar / nav bar)
-- **Persisted locally** — auto-saved in `localStorage` on every change
+- **Mobile-friendly** — responsive, safe-area aware
+- **Persisted locally** — auto-saved in `localStorage`
 
 ## Relationship types
 
@@ -106,5 +119,7 @@ Push to a public repo → **Settings → Pages** → source: root of `main` bran
 ## Stack
 
 - [D3.js v7](https://d3js.org/) — force simulation & SVG rendering
-- Plain HTML / CSS / JS — zero dependencies beyond D3
-- ES modules — `js/` (13 modules) and `css/` (6 files)
+- [qrcodejs](https://github.com/davidshimjs/qrcodejs) — QR code generation
+- [jsQR](https://github.com/cozmo/jsQR) — QR code scanning
+- Plain HTML / CSS / JS — no framework, no build step
+- ES modules — `js/` (14 modules) and `css/` (7 files)

@@ -231,16 +231,20 @@ async function decompressFromBase64(encoded) {
   return JSON.parse(new TextDecoder().decode(buf));
 }
 
-export async function shareAsURL() {
+export async function generateShareURL() {
   const data = {
     version:    3,
     nodes:      state.nodes.map(({ id, name, type, location, note }) =>
                   ({ id, name, type, location: location || null, note: note || '' })),
     extraLinks: state.extraLinks
   };
+  const encoded = await compressToBase64(data);
+  return `${location.origin}${location.pathname}#share=${encoded}`;
+}
+
+export async function shareAsURL() {
   try {
-    const encoded = await compressToBase64(data);
-    const url     = `${location.origin}${location.pathname}#share=${encoded}`;
+    const url = await generateShareURL();
     await navigator.clipboard.writeText(url);
     showFeedback('✓ Share link copied to clipboard!');
   } catch (err) {

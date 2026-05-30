@@ -1,5 +1,6 @@
 import { state, dom } from './state.js';
 import { loadFromStorage, saveToStorage, exportJSON, importJSON, importNetworkJSON, triggerNetworkImport, shareAsURL, checkShareURL, importNetworkFromURL } from './storage.js';
+import { showQRCode, hideQRCode, showImportModal, hideImportModal, importFromURLInput } from './qr.js';
 import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback } from './graph.js';
 import { showPanel, hidePanel } from './sidePanel.js';
 import { openEdit, cancelEdit, saveEdit, editDropdown } from './editPanel.js';
@@ -52,6 +53,8 @@ Object.assign(window, {
   removePerson, clearAll,
   removeExtraLink, createExtraLink,
   exportJSON, triggerNetworkImport, shareAsURL,
+  showQRCode, hideQRCode,
+  showImportModal, hideImportModal, importFromURLInput,
   importFromURL: (nodeId) => {
     const url = document.getElementById('sp-url-input')?.value?.trim();
     if (url) importNetworkFromURL(nodeId, url);

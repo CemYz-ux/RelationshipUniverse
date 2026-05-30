@@ -1,0 +1,154 @@
+/* ── Shared modal base ───────────────────────────────────────────────────── */
+
+#qr-modal,
+#import-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+#qr-modal.visible,
+#import-modal.visible { display: flex; }
+
+#qr-card,
+#import-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  width: 280px;
+}
+
+.qr-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#qr-code {
+  border-radius: 12px;
+  overflow: hidden;
+  line-height: 0;
+}
+
+/* ── Import modal ────────────────────────────────────────────────────────── */
+
+.import-url-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.import-url-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  outline: none;
+  min-width: 0;
+  transition: border-color 0.15s;
+}
+.import-url-input:focus       { border-color: rgba(125, 212, 184, 0.4); }
+.import-url-input::placeholder { color: var(--text-dim); }
+
+.import-url-btn {
+  background: rgba(125, 212, 184, 0.12);
+  border: 1px solid rgba(125, 212, 184, 0.25);
+  border-radius: 8px;
+  color: #7dd4b8;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.import-url-btn:hover { background: rgba(125, 212, 184, 0.22); }
+
+.import-or {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.import-or::before,
+.import-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Camera scanner ──────────────────────────────────────────────────────── */
+
+#import-scanner-wrap {
+  position: relative;
+  width: 232px;
+  height: 232px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+#import-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qr-scan-overlay {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(201, 184, 255, 0.3);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.qr-scan-corner {
+  position: absolute;
+  inset: 12px;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  opacity: 0.7;
+}
+
+#import-scan-status {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* ── Close button ────────────────────────────────────────────────────────── */
+
+.qr-close {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  padding: 6px 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.qr-close:hover { background: rgba(255,255,255,0.09); color: var(--text); }
