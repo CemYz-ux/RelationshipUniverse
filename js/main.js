@@ -62,11 +62,35 @@ Object.assign(window, {
   selectEditType:         v => editDropdown.select(v),
 });
 
-// ── Close dropdowns on outside click ─────────────────────────────────────────
+// ── Overflow menu ─────────────────────────────────────────────────────────────
+
+function toggleOverflowMenu(e) {
+  e.stopPropagation();
+  document.getElementById('io-overflow-menu').classList.toggle('open');
+}
+
+function closeOverflowMenu() {
+  document.getElementById('io-overflow-menu').classList.remove('open');
+}
+
+function togglePanelOverflow(e) {
+  e.stopPropagation();
+  e.currentTarget.closest('.tt-overflow').querySelector('.tt-overflow-menu').classList.toggle('open');
+}
+
+function closePanelOverflow() {
+  document.querySelectorAll('.tt-overflow-menu.open').forEach(m => m.classList.remove('open'));
+}
+
+Object.assign(window, { toggleOverflowMenu, closeOverflowMenu, togglePanelOverflow, closePanelOverflow });
+
+// ── Close dropdowns and menus on outside click ────────────────────────────────
 
 document.addEventListener('click', () => {
   if (addDropdown.isOpen())  addDropdown.close();
   if (editDropdown.isOpen()) editDropdown.close();
+  closeOverflowMenu();
+  closePanelOverflow();
 });
 
 // ── File input wiring ─────────────────────────────────────────────────────────

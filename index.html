@@ -41,12 +41,17 @@
 
   <!-- Import / Export bar -->
   <div id="io-bar">
-    <button class="btn-io" onclick="exportJSON()">↓ Export JSON</button>
-    <button class="btn-io" onclick="shareAsURL()">⤴ Share Link</button>
-    <button class="btn-io" onclick="document.getElementById('import-input').click()">↑ Import JSON</button>
+    <button class="btn-io" onclick="shareAsURL()">⤴ Share</button>
+    <button class="btn-io btn-io-danger" onclick="clearAll()">✕ Clear</button>
+    <div id="io-overflow">
+      <button class="btn-io" id="io-overflow-btn" onclick="toggleOverflowMenu(event)">⋯</button>
+      <div id="io-overflow-menu">
+        <button class="overflow-item" onclick="exportJSON(); closeOverflowMenu()">↓ Backup JSON</button>
+        <button class="overflow-item" onclick="document.getElementById('import-input').click(); closeOverflowMenu()">↑ Restore JSON</button>
+      </div>
+    </div>
     <input id="import-input" type="file" accept=".json" style="display:none" />
     <input id="import-network-input" type="file" accept=".json" style="display:none" />
-    <button class="btn-io btn-io-danger" onclick="clearAll()">✕ Clear All</button>
   </div>
   <span id="import-feedback">✓ Imported!</span>
 

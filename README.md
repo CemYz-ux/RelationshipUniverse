@@ -10,62 +10,64 @@ Click the **You** node → **✎** → edit your name and location. This is your
 
 ### 2. Add someone
 
-Type a name, pick a relationship type, optionally add a location, then hit **+ Add**. The add panel always shows the currently selected node as the target (`→ You:` by default).
+The add panel at the bottom always shows the current target (`→ You:` by default). Type a name, pick a relationship type, optionally add a location, then hit **+ Add** or press Enter.
 
 ### 3. Select a node
 
-**Click any node** to select it as the active add target. The add panel updates to `→ NodeName:` so your next add connects directly to that person. A small bubble appears above the node with two actions:
+**Click any node** to select it as the active add target. The add panel updates to `→ NodeName:` — your next add connects directly to that person. A small bubble also appears with two actions:
 
 - **⇌** — link this node to another existing node
-- **✎** — open the details / edit panel
+- **✎** — open the details panel
 
 Clicking the background deselects and returns to `→ You:`.
 
 ### 4. Connect existing nodes
 
-Click a node → **⇌** → click any other node to draw a peer connection. All connections are equal and removable — click **✕** next to any connection in the details panel.
+Click a node → **⇌** in the bubble → click any other node. All connections are equal and removable via **✕** in the details panel.
 
-### 5. Inspect & edit
+### 5. Details panel (✎)
 
 Click a node → **✎** to open the side panel:
-- Edit name, type, location, note
-- View and remove all connections
-- Import another person's network (JSON file or share URL)
-- Remove the node
 
-### 6. Share your network
+- **✎ Edit** — update name, type, location, note
+- **Remove** — delete the node and all its connections
+- **⋯ More** → Import this person's network from a JSON file
+- **Paste share URL** field at the bottom — import a shared network anchored to this node
 
-Click **⤴ Share Link** in the top bar. Your graph is compressed and encoded into a URL which is copied to your clipboard. Send it to anyone — when they open it, they'll be prompted to import it.
+### 6. Top bar
 
-> **Note:** Share links work best for small-to-medium graphs. Very large graphs produce long URLs that some messaging apps (WhatsApp, SMS) may truncate. Use **↓ Export JSON** for large graphs or permanent backups.
+| Button | Action |
+|--------|--------|
+| **⤴ Share** | Compress & encode the graph into a URL, copy to clipboard |
+| **✕ Clear** | Remove all nodes and connections (with confirmation) |
+| **⋯** | Backup (export JSON) · Restore (import JSON) |
 
-### 7. Import a network
+### 7. Share & import
 
-Three ways to import:
+**Sharing:**
+Click **⤴ Share** → URL copied to clipboard → send to anyone. When they open it, they're prompted to import it.
 
-| Method | Where | What it does |
-|--------|-------|--------------|
-| **↑ Import JSON** | Top bar | Replaces your entire network with the file |
-| **⤴ Open share link** | Browser address bar | Prompts to replace your network |
-| **Paste share URL** | Side panel (bottom) | Merges the shared network anchored to the viewed node |
+**Importing another person's network:**
+Click their node → **✎** → paste their share URL in the field at the bottom → **↑ Import**. Their people merge into your graph, anchored to their node, with full deduplication by name + location.
 
-When merging, nodes are deduplicated by **name + location** — if a person already exists in your graph (including yourself), they won't be duplicated and their connections will be wired up correctly.
+> **Note:** Share URLs work well for small-to-medium graphs. Very large graphs produce long URLs that some messaging apps may truncate. Use **⋯ → Backup JSON** for large graphs or permanent backups.
 
 ### 8. Rearrange
 
-Drag nodes to reposition. Scroll or pinch to zoom. Everything is saved automatically in `localStorage`.
+Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automatically in `localStorage`.
 
 ---
 
 ## Features
 
 - **Click-to-select** — clicking a node sets it as the add target
-- **Peer connections** — link any two existing nodes with **⇌**; symmetric and removable
-- **Share via URL** — compressed, base64-encoded share links; no backend needed
-- **Smart merge import** — deduplicates by name+location across all three import methods
-- **Export filename** — exported JSON is named `<Name>-<Location>-Network.json`
-- **Edit panel** — styled type dropdown, editable name / location / note
-- **Mobile-friendly** — responsive layout, safe-area aware (home bar / nav bar)
+- **Node bubble** — quick **⇌** (link existing) and **✎** (details) actions
+- **Peer connections** — link any two nodes; symmetric and removable
+- **Share via URL** — compressed base64 share links, no backend needed
+- **Smart merge** — imports deduplicate by name + location (including yourself)
+- **Export filename** — `<Name>-<Location>-Network.json`
+- **Consolidated UI** — Share and Clear prominent; JSON backup/restore behind ⋯
+- **Mobile-friendly** — responsive, safe-area aware (home bar / nav bar)
 - **Persisted locally** — auto-saved in `localStorage` on every change
 
 ## Relationship types
@@ -99,7 +101,7 @@ Then open **http://localhost:3000**.
 
 ## GitHub Pages
 
-Push to a public repo → **Settings → Pages** → source: root of `main` branch. Works out of the box — no build step needed.
+Push to a public repo → **Settings → Pages** → source: root of `main` branch. Works out of the box.
 
 ## Stack
 

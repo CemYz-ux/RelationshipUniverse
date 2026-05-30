@@ -40,10 +40,13 @@ export function showPanel(e, d) {
     ${connHTML}
     <div class="tt-actions">
       <button class="btn-tt btn-tt-neutral" onclick="openEdit('${d.id}')">✎ Edit ${isMe ? 'your info' : d.name}</button>
-      <button class="btn-tt btn-tt-neutral" onclick="startLinkPickMode('${d.id}')">⇌ Link to existing node</button>
-      <button class="btn-tt btn-tt-primary" onclick="startConnectMode('${d.id}','${d.name}')">+ Add connection to ${isMe ? 'you' : d.name}</button>
-      <button class="btn-tt btn-tt-import" onclick="triggerNetworkImport('${d.id}')">↑ Import ${isMe ? 'your' : d.name + "'s"} network</button>
       ${!isMe ? `<button class="btn-tt btn-tt-danger" onclick="removePerson('${d.id}')">Remove ${d.name}</button>` : ''}
+      <div class="tt-overflow">
+        <button class="btn-tt btn-tt-neutral tt-overflow-btn" onclick="togglePanelOverflow(event)">⋯ More</button>
+        <div class="tt-overflow-menu">
+          <button class="overflow-item" onclick="triggerNetworkImport('${d.id}'); closePanelOverflow()">↑ Import ${isMe ? 'your' : d.name + "'s"} network (JSON)</button>
+        </div>
+      </div>
     </div>
     <div class="tt-divider"></div>
     <div class="tt-url-import">

@@ -11,8 +11,9 @@ Each flow describes the steps a user takes and the expected outcome.
 **Steps:**
 1. Open the app — the graph shows a single "You" node in the centre.
 2. Click the **You** node → bubble appears → click **✎**.
-3. In the side panel, edit name and location (e.g. "Alex", "Hamburg").
-4. Click **Save**.
+3. In the side panel, click **✎ Edit your info**.
+4. Update name and location (e.g. "Alex", "Hamburg").
+5. Click **Save**.
 
 **Expected outcome:**
 - The You node label updates to the new name.
@@ -25,11 +26,9 @@ Each flow describes the steps a user takes and the expected outcome.
 **Goal:** Add a new node directly connected to the You node.
 
 **Steps:**
-1. The add panel at the bottom shows `→ You:` (or your name) by default.
-2. Type a name in the Name field.
-3. Select a relationship type from the dropdown.
-4. Optionally type a location.
-5. Click **+ Add** or press Enter.
+1. The add panel shows `→ You:` (or your name) by default.
+2. Type a name, select a relationship type, optionally add a location.
+3. Click **+ Add** or press Enter.
 
 **Expected outcome:**
 - A new node appears in the graph connected to You.
@@ -48,7 +47,7 @@ Each flow describes the steps a user takes and the expected outcome.
 3. Click **+ Add** or press Enter.
 
 **Expected outcome:**
-- A new node appears connected to Max, not to You.
+- A new node appears connected to Max.
 - Clicking the background resets the add panel back to `→ You:`.
 
 ---
@@ -63,8 +62,8 @@ Each flow describes the steps a user takes and the expected outcome.
 3. Click another node (e.g. "Carl").
 
 **Expected outcome:**
-- A dashed connection line appears between Linda and Carl.
-- The side panel reopens on Linda showing Carl listed under Connections.
+- A dashed connection appears between Linda and Carl.
+- The side panel reopens on Linda showing Carl in Connections.
 - Clicking the background instead of a node cancels the operation.
 
 ---
@@ -75,13 +74,11 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Steps:**
 1. Click either connected node → **✎** → side panel opens.
-2. In the Connections section, find the connection chip.
-3. Click the **✕** next to the connection name.
+2. In the Connections section, click **✕** next to the connection name.
 
 **Expected outcome:**
-- The connection line disappears from the graph.
+- The connection line disappears.
 - Both nodes remain in the graph.
-- The connection no longer appears in either node's side panel.
 
 ---
 
@@ -92,28 +89,27 @@ Each flow describes the steps a user takes and the expected outcome.
 **Steps:**
 1. Click a node → **✎** → side panel opens.
 2. Click **✎ Edit [Name]**.
-3. Update any fields. The type dropdown uses the same styled picker as the add panel.
+3. Update any fields. The type uses the same styled dropdown as the add panel.
 4. Click **Save**.
 
 **Expected outcome:**
-- The node label and colour update immediately in the graph.
-- Changes are saved to localStorage.
-- The side panel returns to the view mode showing updated information.
+- Node label and colour update immediately.
+- Changes saved to localStorage.
+- Side panel returns to view mode with updated info.
 
 ---
 
 ## 7. Remove a node
 
-**Goal:** Delete a person and all their connections from the graph.
+**Goal:** Delete a person and all their connections.
 
 **Steps:**
 1. Click a node → **✎** → side panel opens.
 2. Click **Remove [Name]**.
 
 **Expected outcome:**
-- The node and all its connection lines are removed from the graph.
+- The node and all its connections are removed.
 - No other nodes are affected.
-- Data is saved to localStorage.
 
 ---
 
@@ -123,59 +119,55 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Steps:**
 - **Drag** any non-You node to reposition it.
-- **Scroll** (or pinch on mobile) to zoom in and out.
+- **Scroll** (or pinch on mobile) to zoom in/out.
 - **Drag** the background to pan.
 
 **Expected outcome:**
-- Nodes stay where dropped; the force simulation does not override manual positions.
+- Nodes stay where dropped.
 - You node stays fixed at the centre.
-- Zoom and pan persist until the page is reloaded.
 
 ---
 
-## 9. Export graph as JSON
+## 9. Backup graph as JSON
 
-**Goal:** Save the graph to a file for backup or sharing.
+**Goal:** Save the graph to a file for archiving or large-graph sharing.
 
 **Steps:**
-1. Click **↓ Export JSON** in the top bar.
+1. Click **⋯** in the top bar → **↓ Backup JSON**.
 
 **Expected outcome:**
-- A JSON file downloads, named `<Name>-<Location>-Network.json` (e.g. `Alex-Hamburg-Network.json`).
+- A JSON file downloads named `<Name>-<Location>-Network.json`.
 - Falls back to `<Name>-Network.json` if no location is set.
-- The file contains all nodes and connections and can be re-imported later.
 
 ---
 
-## 10. Import graph from JSON (replace)
+## 10. Restore graph from JSON
 
-**Goal:** Load a previously exported graph, replacing the current one.
+**Goal:** Load a previously backed-up graph, replacing the current one.
 
 **Steps:**
-1. Click **↑ Import JSON** in the top bar.
+1. Click **⋯** in the top bar → **↑ Restore JSON**.
 2. Select a `.json` file exported from this app.
 
 **Expected outcome:**
-- The current graph is fully replaced with the imported one.
+- The current graph is fully replaced.
 - A green confirmation notification appears below the top bar.
-- Data is saved to localStorage.
 
 ---
 
 ## 11. Share graph via URL
 
-**Goal:** Share the entire graph as a link without needing a file.
+**Goal:** Share the entire graph as a link without a file.
 
 **Steps:**
-1. Click **⤴ Share Link** in the top bar.
+1. Click **⤴ Share** in the top bar.
 
 **Expected outcome:**
 - The graph is compressed and encoded into a URL (`#share=...`).
 - The URL is copied to the clipboard.
-- A confirmation notification appears.
-- Pasting and opening the URL in any browser prompts the recipient to import it.
+- A confirmation notification appears below the top bar.
 
-> **Limitation:** Very large graphs (100+ nodes) produce long URLs that may be truncated by WhatsApp, SMS, or other messaging apps. Use Export JSON for large graphs.
+> **Limitation:** Very large graphs (100+ nodes) produce long URLs that some messaging apps may truncate. Use Backup JSON for large graphs.
 
 ---
 
@@ -184,64 +176,63 @@ Each flow describes the steps a user takes and the expected outcome.
 **Goal:** Open someone's shared graph link and load it.
 
 **Steps:**
-1. Open the share URL in a browser (e.g. `https://cemyz-ux.github.io/RelationshipUniverse/#share=...`).
+1. Open the share URL in a browser.
 
 **Expected outcome:**
-- A dialog asks: "A shared network was found. Import it?" (or "Replace your current network?" if one exists).
-- Confirming loads the shared graph and saves it to localStorage.
-- The hash is removed from the URL so refreshing does not re-trigger the prompt.
+- A dialog asks to import (or replace if an existing graph is present).
+- Confirming loads the shared graph and saves to localStorage.
+- The hash is removed from the URL so refreshing doesn't re-trigger the prompt.
 - Cancelling leaves the existing graph untouched.
 
 ---
 
-## 13. Import a person's network (merge via JSON)
+## 13. Import a person's network — merge via JSON
 
-**Goal:** Merge another person's exported graph into your own, anchored to their node.
+**Goal:** Merge another person's graph into your own, anchored to their node.
 
-**Pre-condition:** The other person's node already exists in your graph (e.g. "Max").
+**Pre-condition:** The person's node already exists in your graph (e.g. "Max").
 
 **Steps:**
 1. Click Max's node → **✎** → side panel opens.
-2. Click **↑ Import Max's network**.
+2. Click **⋯ More** → **↑ Import Max's network (JSON)**.
 3. Select Max's exported `.json` file.
 
 **Expected outcome:**
-- Nodes from Max's file that don't exist in your graph are added.
-- Nodes that already exist (matched by name + location) are not duplicated — their connections are wired to the existing nodes instead.
-- Your own node (matched by your name + location) is also deduplicated — you won't appear twice.
-- All new connections from Max's network are added.
+- New nodes from Max's file are added to the graph.
+- Nodes already existing (matched by name + location) are not duplicated — their connections are wired to the existing nodes.
+- Your own node (matched by your name + location) is also deduplicated.
 - A notification shows how many nodes and connections were imported.
 
 ---
 
-## 14. Import a person's network (merge via URL)
+## 14. Import a person's network — merge via URL
 
-**Goal:** Same as flow 13 but using a share URL instead of a JSON file.
+**Goal:** Same as flow 13 but using a share URL instead of a file.
 
 **Pre-condition:** Max's node exists in your graph and you have Max's share link.
 
 **Steps:**
 1. Click Max's node → **✎** → side panel opens.
-2. Paste Max's share URL into the **"Paste share URL to import…"** field at the bottom of the panel.
+2. Paste Max's share URL into the **"Paste share URL to import…"** field at the bottom.
 3. Click **↑ Import**.
 
 **Expected outcome:**
 - Same deduplication and merge behaviour as flow 13.
-- No file download or upload required.
+- No file required.
 
 ---
 
 ## 15. Persist across sessions
 
-**Goal:** Verify that the graph survives a page reload.
+**Goal:** Verify the graph survives a page reload.
 
 **Steps:**
 1. Add several nodes and connections.
 2. Close or reload the page.
 
 **Expected outcome:**
-- All nodes, connections, and layout are restored exactly as they were.
-- Data is stored in `localStorage` under the key `ru-graph`.
+- All nodes and connections are restored exactly as left.
+- Data stored in `localStorage` under the key `ru-graph`.
 
 ---
 
@@ -249,8 +240,9 @@ Each flow describes the steps a user takes and the expected outcome.
 
 | Scenario | Expected behaviour |
 |----------|--------------------|
-| Add a node with no name | Nothing happens; the add panel stays open |
-| Link a node to itself | Ignored; no self-loop is created |
+| Add a node with no name | Nothing happens; add panel stays open |
+| Link a node to itself | Ignored; no self-loop created |
 | Import a network where all nodes already exist | Alert: "Nothing new to import" |
-| Open a malformed or expired share URL | Silent failure; existing graph is untouched |
-| Clear all | Confirm dialog appears; on confirm, all nodes except You are removed and localStorage is cleared |
+| Open a malformed or expired share URL | Silent failure; existing graph untouched |
+| Clear all | Confirm dialog; on confirm all nodes except You are removed |
+| Share URL too long for messaging app | URL still works in browser; advise Backup JSON for large graphs |

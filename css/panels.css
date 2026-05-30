@@ -129,6 +129,27 @@
 }
 .btn-tt-import:hover { background: rgba(125, 212, 184, 0.16); }
 
+/* ── Panel overflow menu ─────────────────────────────────────────────────── */
+
+.tt-overflow { position: relative; }
+
+.tt-overflow-menu {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 5px;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 50;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+}
+.tt-overflow-menu.open { display: flex; }
+
 /* ── URL import row ─────────────────────────────────────────────────────── */
 
 .tt-url-import {
