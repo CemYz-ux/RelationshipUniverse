@@ -76,6 +76,13 @@ const zoom = d3.zoom()
   .on('zoom', e => g.attr('transform', e.transform));
 svg.call(zoom);
 
+const bubble   = document.getElementById('node-bubble');
+const nbAdd    = document.getElementById('nb-add');
+const nbLink   = document.getElementById('nb-link');
+const nbInfo   = document.getElementById('nb-info');
+
+let bubbleNodeId = null;
+
 let linkSel, nodeSel, simulation;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -190,7 +197,7 @@ function buildGraph() {
         if (d.id !== linkPickMode) createExtraLink(linkPickMode, d.id);
         return;
       }
-      showPanel(e, d);
+      showBubble(e, d);
     });
 
   nodeSel.each(function(d) {
@@ -256,6 +263,7 @@ function ticked() {
 // ── Drag ──────────────────────────────────────────────────────────────────────
 
 function dragStart(e, d) {
+  hideBubble();
   if (!e.active) simulation.alphaTarget(0.3).restart();
   if (d.id !== 'me') { d.fx = d.x; d.fy = d.y; }
 }
@@ -322,7 +330,63 @@ function hidePanel() {
 
 svg.on('click', () => {
   if (linkPickMode) { cancelLinkPickMode(); return; }
+  hideBubble();
   hidePanel();
+});
+
+// ── Node bubble ───────────────────────────────────────────────────────────────
+
+function showBubble(e, d) {
+  // If same node tapped again, toggle off
+  if (bubbleNodeId === d.id && bubble.classList.contains('visible')) {
+    hideBubble(); return;
+  }
+  bubbleNodeId = d.id;
+  hidePanel();
+
+  // Convert D3 graph coords → screen coords
+  const transform = d3.zoomTransform(svgEl);
+  const svgRect   = svgEl.getBoundingClientRect();
+  const sx = svgRect.left + transform.applyX(d.x);
+  const sy = svgRect.top  + transform.applyY(d.y) - getSize(d.type) - 9; // sit above the ring
+
+  bubble.style.left = sx + 'px';
+  bubble.style.top  = sy + 'px';
+
+  // Tint the + button to the node color
+  nbAdd.style.color       = getColor(d.type);
+  nbAdd.style.borderColor = getColor(d.type) + '55';
+
+  // Hide "add" for the You node if desired — keep it, it's useful
+  bubble.classList.add('visible');
+}
+
+function hideBubble() {
+  bubbleNodeId = null;
+  bubble.classList.remove('visible');
+}
+
+nbAdd.addEventListener('click', e => {
+  e.stopPropagation();
+  const d = nodes.find(n => n.id === bubbleNodeId);
+  if (!d) return;
+  hideBubble();
+  startConnectMode(d.id, d.name);
+});
+
+nbLink.addEventListener('click', e => {
+  e.stopPropagation();
+  const id = bubbleNodeId;
+  hideBubble();
+  startLinkPickMode(id);
+});
+
+nbInfo.addEventListener('click', e => {
+  e.stopPropagation();
+  const d = nodes.find(n => n.id === bubbleNodeId);
+  if (!d) return;
+  hideBubble();
+  showPanel({ stopPropagation: () => {} }, d);
 });
 
 // ── Side panel: EDIT ──────────────────────────────────────────────────────────
