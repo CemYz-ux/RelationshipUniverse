@@ -1,7 +1,6 @@
 import { state, dom } from './state.js';
 import { getColor, getSize } from './helpers.js';
 import { showPanel } from './sidePanel.js';
-import { startConnectMode } from './addPanel.js';
 import { startLinkPickMode } from './linkMode.js';
 
 export function showBubble(e, d) {
@@ -28,14 +27,6 @@ export function hideBubble() {
 }
 
 // ── Button wiring ─────────────────────────────────────────────────────────────
-
-dom.nbAdd.addEventListener('click', e => {
-  e.stopPropagation();
-  const d = state.nodes.find(n => n.id === state.bubbleNodeId);
-  if (!d) return;
-  hideBubble();
-  startConnectMode(d.id, d.name);
-});
 
 dom.nbLink.addEventListener('click', e => {
   e.stopPropagation();

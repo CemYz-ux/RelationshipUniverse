@@ -22,7 +22,6 @@ export const dom = {
   svgEl:     document.getElementById('svg'),
   container: document.getElementById('graph-container'),
   bubble:    document.getElementById('node-bubble'),
-  nbAdd:     document.getElementById('nb-add'),
   nbLink:    document.getElementById('nb-link'),
   nbInfo:    document.getElementById('nb-info'),
 };
