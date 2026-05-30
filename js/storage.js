@@ -132,9 +132,10 @@ export function importNetworkJSON(event) {
         .filter(n => n.id !== theirMeId)
         .forEach(n => {
           const key      = nodeKey(n);
-          const existing = state.nodes.find(x => x.id !== 'me' && nodeKey(x) === key);
+          // Check against ALL existing nodes, including 'me' (the importer themselves)
+          const existing = state.nodes.find(x => nodeKey(x) === key);
           if (existing) {
-            // Duplicate — map to existing node, no new node created
+            // Duplicate — map to existing node (could be 'me' if name+location match)
             idMap.set(n.id, existing.id);
           } else {
             const newId = prefix + n.id;
