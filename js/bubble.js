@@ -19,11 +19,6 @@ export function showBubble(e, d) {
 
   dom.bubble.style.left = sx + 'px';
   dom.bubble.style.top  = sy + 'px';
-
-  // Tint the + button to match the node colour
-  dom.nbAdd.style.color       = getColor(d.type);
-  dom.nbAdd.style.borderColor = getColor(d.type) + '55';
-
   dom.bubble.classList.add('visible');
 }
 

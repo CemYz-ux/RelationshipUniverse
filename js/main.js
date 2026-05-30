@@ -8,21 +8,29 @@ import { removePerson, clearAll, createExtraLink, removeExtraLink } from './acti
 import { startLinkPickMode, cancelLinkPickMode, handleLinkPickClick } from './linkMode.js';
 import { showBubble, hideBubble } from './bubble.js';
 
+// ── Node click handler ────────────────────────────────────────────────────────
+
 setNodeClickHandler((e, d) => {
   if (state.linkPickMode) {
     if (d.id !== state.linkPickMode) handleLinkPickClick(d.id);
     return;
   }
+  // Show bubble for edit/link/info AND activate connect mode for this node
   showBubble(e, d);
+  startConnectMode(d.id, d.name);
 });
 
-setDragStartCallback(() => hideBubble());
+setDragStartCallback(() => {
+  hideBubble();
+  cancelConnectMode();
+});
 
 // ── SVG background click ──────────────────────────────────────────────────────
 
 svg.on('click', () => {
   if (state.linkPickMode) { cancelLinkPickMode(); return; }
   hideBubble();
+  cancelConnectMode();
   hidePanel();
 });
 
@@ -38,17 +46,12 @@ window.addEventListener('resize', () => {
 // ── Expose globals for inline onclick handlers ────────────────────────────────
 
 Object.assign(window, {
-  // Edit panel
   openEdit, cancelEdit, saveEdit,
-  // Add panel
   addPerson, cancelConnectMode,
-  // Side panel actions
   startConnectMode, startLinkPickMode, cancelLinkPickMode,
   removePerson, clearAll,
   removeExtraLink, createExtraLink,
-  // Storage
   exportJSON, triggerNetworkImport,
-  // Type dropdowns (called via onclick in HTML)
   toggleTypeDropdown:     e => addDropdown.toggle(e),
   selectType:             v => addDropdown.select(v),
   toggleEditTypeDropdown: e => editDropdown.toggle(e),
