@@ -49,14 +49,19 @@
 .btn-io-danger:hover { background: rgba(255,80,80,0.1) !important; border-color: rgba(255,80,80,0.35) !important; color: #ff8080 !important; }
 
 #import-feedback {
+  position: absolute;
+  top: calc(18px + 34px + 6px); /* just below the io-bar */
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 11px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 99px;
   background: rgba(125, 212, 184, 0.12);
   color: #7dd4b8;
   border: 1px solid rgba(125, 212, 184, 0.2);
   display: none;
   white-space: nowrap;
+  z-index: 20;
 }
 
 /* ── Legend ──────────────────────────────────────────────────────────────── */
