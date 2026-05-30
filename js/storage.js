@@ -51,10 +51,15 @@ export function exportJSON() {
     })),
     extraLinks: state.extraLinks
   };
+  const me       = state.nodes.find(n => n.id === 'me');
+  const namePart = (me?.name     || 'You').replace(/\s+/g, '-');
+  const locPart  = (me?.location || '').replace(/\s+/g, '-');
+  const filename = locPart ? `${namePart}-${locPart}-Network.json` : `${namePart}-Network.json`;
+
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a    = document.createElement('a');
   a.href     = URL.createObjectURL(blob);
-  a.download = 'relationship-graph.json';
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(a.href);
 }
