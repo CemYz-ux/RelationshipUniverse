@@ -4,49 +4,69 @@ An interactive force-graph for mapping the people in your life. Built with D3.js
 
 ## Quick start
 
-### 1. Add someone
+### 1. Set yourself up
 
-Type a name, pick a relationship type from the styled dropdown, optionally add a location, then hit **+ Add**. New nodes are always connected to whichever node is currently selected (defaults to **You**).
+Click the **You** node → **✎** → edit your name and location. This is your identity — it's used to deduplicate you when someone imports your network.
 
-### 2. Select a node
+### 2. Add someone
 
-**Click any node** to select it as the active target. The add panel immediately updates to `→ NodeName:` so your next add will connect directly to that person. A small bubble also appears above the node with two actions:
+Type a name, pick a relationship type, optionally add a location, then hit **+ Add**. The add panel always shows the currently selected node as the target (`→ You:` by default).
+
+### 3. Select a node
+
+**Click any node** to select it as the active add target. The add panel updates to `→ NodeName:` so your next add connects directly to that person. A small bubble appears above the node with two actions:
 
 - **⇌** — link this node to another existing node
 - **✎** — open the details / edit panel
 
-Clicking the background deselects and returns the add panel to `→ You:`.
+Clicking the background deselects and returns to `→ You:`.
 
-### 3. Connect existing nodes
+### 4. Connect existing nodes
 
-Click a node → press **⇌** in the bubble → then click any other node to draw a peer connection between them. All connections are equal — any can be removed by clicking the **✕** next to it in the details panel.
+Click a node → **⇌** → click any other node to draw a peer connection. All connections are equal and removable — click **✕** next to any connection in the details panel.
 
-### 4. Inspect & edit
+### 5. Inspect & edit
 
-Click a node → press **✎** in the bubble to open the side panel. From there you can:
-
+Click a node → **✎** to open the side panel:
 - Edit name, type, location, note
-- See and remove all connections
-- Import their network (merge another exported graph)
-- Remove the node entirely
+- View and remove all connections
+- Import another person's network (JSON file or share URL)
+- Remove the node
 
-### 5. Rearrange
+### 6. Share your network
 
-Drag nodes to reposition them. Scroll (or pinch) to zoom. Your data is saved automatically in `localStorage`.
+Click **⤴ Share Link** in the top bar. Your graph is compressed and encoded into a URL which is copied to your clipboard. Send it to anyone — when they open it, they'll be prompted to import it.
+
+> **Note:** Share links work best for small-to-medium graphs. Very large graphs produce long URLs that some messaging apps (WhatsApp, SMS) may truncate. Use **↓ Export JSON** for large graphs or permanent backups.
+
+### 7. Import a network
+
+Three ways to import:
+
+| Method | Where | What it does |
+|--------|-------|--------------|
+| **↑ Import JSON** | Top bar | Replaces your entire network with the file |
+| **⤴ Open share link** | Browser address bar | Prompts to replace your network |
+| **Paste share URL** | Side panel (bottom) | Merges the shared network anchored to the viewed node |
+
+When merging, nodes are deduplicated by **name + location** — if a person already exists in your graph (including yourself), they won't be duplicated and their connections will be wired up correctly.
+
+### 8. Rearrange
+
+Drag nodes to reposition. Scroll or pinch to zoom. Everything is saved automatically in `localStorage`.
 
 ---
 
 ## Features
 
-- **Click-to-select** — clicking a node sets it as the add target; type a name and hit **+ Add**
-- **Peer connections** — link any two existing nodes with **⇌**; all connections are symmetric and removable
-- **Node bubble** — quick **⇌** and **✎** actions appear above a selected node
-- **Edit panel** — styled type dropdown (matching the add panel), editable name / location / note
-- **Drag & rearrange** — reposition freely; scroll/pinch to zoom
-- **Export & import** — save your graph as JSON and reload it later
-- **Network import** — merge someone else's exported graph into yours, anchored to their node
+- **Click-to-select** — clicking a node sets it as the add target
+- **Peer connections** — link any two existing nodes with **⇌**; symmetric and removable
+- **Share via URL** — compressed, base64-encoded share links; no backend needed
+- **Smart merge import** — deduplicates by name+location across all three import methods
+- **Export filename** — exported JSON is named `<Name>-<Location>-Network.json`
+- **Edit panel** — styled type dropdown, editable name / location / note
+- **Mobile-friendly** — responsive layout, safe-area aware (home bar / nav bar)
 - **Persisted locally** — auto-saved in `localStorage` on every change
-- **Mobile-friendly** — responsive layout, safe-area aware (home bar / nav bar), works on Android & iOS
 
 ## Relationship types
 
@@ -62,27 +82,27 @@ Drag nodes to reposition them. Scroll (or pinch) to zoom. Your data is saved aut
 
 ## Running locally
 
-Because the app uses ES modules, it needs to be served over HTTP — opening `index.html` directly via `file://` will not work.
+ES modules require HTTP — opening `index.html` via `file://` won't work.
 
 ```bash
-# Node.js (recommended)
-npm start          # runs: npx serve . --listen 3000
+# Node.js
+npm start          # npx serve . --listen 3000
 
 # Python
 python -m http.server 3000
 
 # VS Code
-# Install the "Live Server" extension, then right-click index.html → Open with Live Server
+# Right-click index.html → Open with Live Server
 ```
 
-Then open **http://localhost:3000** in your browser.
+Then open **http://localhost:3000**.
 
-## Deploying to GitHub Pages
+## GitHub Pages
 
-Push to a public repo and enable Pages from **Settings → Pages** (source: root of `main` branch). ES modules work fine over HTTPS — no build step needed.
+Push to a public repo → **Settings → Pages** → source: root of `main` branch. Works out of the box — no build step needed.
 
 ## Stack
 
 - [D3.js v7](https://d3js.org/) — force simulation & SVG rendering
 - Plain HTML / CSS / JS — zero dependencies beyond D3
-- ES modules — code split across `js/` (13 modules) and `css/` (6 files)
+- ES modules — `js/` (13 modules) and `css/` (6 files)
