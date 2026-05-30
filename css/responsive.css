@@ -1,0 +1,70 @@
+/* ── Tablet (≤ 768px) ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #side-panel { width: 210px; }
+  .btn-io     { padding: 4px 10px; font-size: 10px; }
+}
+
+/* ── Mobile (≤ 540px) ────────────────────────────────────────────────────── */
+@media (max-width: 540px) {
+
+  header { padding: 10px 14px 0; gap: 6px; }
+  header h1 { font-size: 17px; }
+  header p  { display: none; }
+
+  /* Legend — horizontal strip above add panel */
+  #legend {
+    position: fixed;
+    display: flex;
+    top: auto;
+    bottom: 82px;
+    left: 12px;
+    right: 12px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    background: rgba(20, 14, 40, 0.75);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+
+  #io-bar { top: 12px; gap: 4px; }
+  .btn-io { padding: 4px 8px; font-size: 10px; }
+
+  /* Side panel floats above legend */
+  #side-panel {
+    top: auto;
+    bottom: 130px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    border-radius: 14px;
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+
+  /* Add panel — two-row layout */
+  #panel {
+    left: 12px;
+    right: 12px;
+    bottom: 14px;
+    transform: none;
+    border-radius: 16px;
+    padding: 7px 12px;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  #name-input     { width: 70px; flex-shrink: 1; }
+  #location-input { width: 58px; flex-shrink: 1; }
+
+  .btn-add {
+    flex: 1 1 100%;
+    padding: 5px 0;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .type-dropdown-menu { bottom: calc(100% + 12px); min-width: 120px; }
+}

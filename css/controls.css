@@ -1,0 +1,242 @@
+/* ── GitHub link ─────────────────────────────────────────────────────────── */
+
+#github-link {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  opacity: 0.6;
+  transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+  z-index: 20;
+}
+#github-link:hover { opacity: 1; color: var(--text); border-color: rgba(255,255,255,0.15); }
+#github-link svg   { width: 15px; height: 15px; fill: currentColor; }
+
+/* ── Import / Export bar ─────────────────────────────────────────────────── */
+
+#io-bar {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 20;
+}
+
+.btn-io {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 99px;
+  padding: 5px 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-io:hover { background: var(--surface2); color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+.btn-io-danger       { color: #ff6b6b !important; border-color: rgba(255,80,80,0.2) !important; }
+.btn-io-danger:hover { background: rgba(255,80,80,0.1) !important; border-color: rgba(255,80,80,0.35) !important; color: #ff8080 !important; }
+
+#import-feedback {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: rgba(125, 212, 184, 0.12);
+  color: #7dd4b8;
+  border: 1px solid rgba(125, 212, 184, 0.2);
+  display: none;
+  white-space: nowrap;
+}
+
+/* ── Legend ──────────────────────────────────────────────────────────────── */
+
+#legend {
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Add person panel ────────────────────────────────────────────────────── */
+
+#panel {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 9px 15px;
+  z-index: 20;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+#panel input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+}
+#panel input::placeholder { color: var(--text-dim); }
+
+#name-input     { width: 110px; }
+#location-input { width: 100px; }
+
+.panel-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Type dropdown ───────────────────────────────────────────────────────── */
+
+.type-dropdown { position: relative; }
+
+.type-dropdown-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+}
+.type-dropdown-btn:hover { color: var(--text); }
+
+.td-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.td-chevron {
+  font-size: 9px;
+  opacity: 0.45;
+  margin-left: 1px;
+}
+
+.type-dropdown-menu {
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 5px;
+  display: none;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 50;
+  white-space: nowrap;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  min-width: 130px;
+}
+
+/* Edit panel dropdown escapes via fixed positioning */
+#edit-type-menu {
+  position: fixed;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  z-index: 200;
+}
+
+.type-dropdown-menu.open { display: flex; }
+
+.td-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.1s, color 0.1s;
+}
+.td-option:hover   { background: rgba(255,255,255,0.06); color: var(--text); }
+.td-option.selected { color: var(--text); }
+
+/* ── Add button & connect controls ──────────────────────────────────────── */
+
+.btn-add {
+  background: var(--accent);
+  color: #0d0d12;
+  border: none;
+  border-radius: 99px;
+  padding: 5px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.btn-add:hover { opacity: 0.82; }
+
+#connect-to-label {
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  display: none;
+}
+
+#connect-cancel {
+  font-size: 11px;
+  color: var(--text-dim);
+  cursor: pointer;
+  flex-shrink: 0;
+  display: none;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  padding: 0;
+}
+#connect-cancel:hover { color: var(--text); }
