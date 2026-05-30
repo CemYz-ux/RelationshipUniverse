@@ -1,6 +1,6 @@
 import { STORAGE_KEY } from './constants.js';
 import { state } from './state.js';
-import { parseNodeArray, extraLinksFromLegacyNodes } from './helpers.js';
+import { parseNodeArray, extraLinksFromLegacyNodes, nodeKey, linkExists } from './helpers.js';
 import { buildGraph, rebuildLinks, getSimulation } from './graph.js';
 import { hidePanel } from './sidePanel.js';
 
@@ -119,49 +119,70 @@ export function importNetworkJSON(event) {
       const prefix    = anchorId + '_net_' + Date.now() + '_';
       const theirMe   = data.nodes.find(n => n.id === 'me' || n.type === 'me');
       const theirMeId = theirMe ? theirMe.id : null;
-      const mapId     = id => (id === theirMeId) ? anchorId : prefix + id;
 
-      const existingKeys = new Set(state.nodes.map(n =>
-        `${(n.name||'').toLowerCase()}|${(n.location||'').toLowerCase()}`
-      ));
+      // Build a full ID map: imported ID → our ID
+      // Nodes that already exist (matched by name+location) map to the existing node's ID
+      // New nodes get a fresh prefixed ID
+      const idMap = new Map();
+      if (theirMeId) idMap.set(theirMeId, anchorId);
 
-      const newNodes = data.nodes
+      const newNodes = [];
+
+      data.nodes
         .filter(n => n.id !== theirMeId)
-        .map(n => {
-          const key = `${(n.name||'').toLowerCase()}|${(n.location||'').toLowerCase()}`;
-          if (existingKeys.has(key)) return null;
-          return { id: mapId(n.id), name: n.name || 'Unknown', type: n.type || 'other', location: n.location || null, note: n.note || '' };
-        })
-        .filter(Boolean);
+        .forEach(n => {
+          const key      = nodeKey(n);
+          const existing = state.nodes.find(x => x.id !== 'me' && nodeKey(x) === key);
+          if (existing) {
+            // Duplicate — map to existing node, no new node created
+            idMap.set(n.id, existing.id);
+          } else {
+            const newId = prefix + n.id;
+            idMap.set(n.id, newId);
+            newNodes.push({
+              id:       newId,
+              name:     n.name     || 'Unknown',
+              type:     n.type     || 'other',
+              location: n.location || null,
+              note:     n.note     || ''
+            });
+          }
+        });
 
-      if (newNodes.length === 0) {
-        alert('No new nodes to import (all may already exist).');
-        event.target.value = '';
-        return;
-      }
+      const mapId  = id => idMap.get(id) ?? prefix + id;
+      const allIds = new Set([...state.nodes.map(n => n.id), ...newNodes.map(n => n.id)]);
 
+      // Map imported links through idMap so connections involving existing nodes
+      // wire up to the correct nodes (e.g. Linda in two networks = same Linda)
       const theirLinks = (Array.isArray(data.extraLinks) && data.extraLinks.length)
         ? data.extraLinks
         : extraLinksFromLegacyNodes(data.nodes);
 
-      const allIds  = new Set([...state.nodes.map(n => n.id), ...newNodes.map(n => n.id)]);
       const newLinks = theirLinks
         .map(l => ({ source: mapId(l.source), target: mapId(l.target) }))
+        .filter(l => l.source !== l.target)
         .filter(l => allIds.has(l.source) && allIds.has(l.target))
-        .filter(l => !state.extraLinks.some(x =>
-          (x.source === l.source && x.target === l.target) ||
-          (x.source === l.target && x.target === l.source)
-        ));
+        .filter(l => !linkExists(state.extraLinks, l.source, l.target));
 
+      // Ensure each truly new node has at least one connection to the anchor
       newNodes.forEach(n => {
-        if (!newLinks.some(l => (l.source === anchorId && l.target === n.id) || (l.source === n.id && l.target === anchorId))) {
-          newLinks.push({ source: anchorId, target: n.id });
-        }
         const angle = Math.random() * 2 * Math.PI;
         const dist  = 130 + Math.random() * 80;
         n.x = (anchorNode.x || 0) + Math.cos(angle) * dist;
         n.y = (anchorNode.y || 0) + Math.sin(angle) * dist;
+
+        if (!linkExists(state.extraLinks, anchorId, n.id) &&
+            !newLinks.some(l => (l.source === anchorId && l.target === n.id) ||
+                                (l.source === n.id && l.target === anchorId))) {
+          newLinks.push({ source: anchorId, target: n.id });
+        }
       });
+
+      if (newNodes.length === 0 && newLinks.length === 0) {
+        alert('Nothing new to import — all nodes and connections already exist.');
+        event.target.value = '';
+        return;
+      }
 
       state.nodes      = state.nodes.concat(newNodes);
       state.extraLinks = state.extraLinks.concat(newLinks);
@@ -169,7 +190,12 @@ export function importNetworkJSON(event) {
       buildGraph();
       getSimulation().alpha(0.6).restart();
       saveToStorage();
-      showFeedback(`✓ ${newNodes.length} node${newNodes.length > 1 ? 's' : ''} imported from ${anchorNode.name}'s network`);
+
+      const parts = [
+        newNodes.length ? `${newNodes.length} new node${newNodes.length > 1 ? 's' : ''}` : '',
+        newLinks.length ? `${newLinks.length} new connection${newLinks.length > 1 ? 's' : ''}` : ''
+      ].filter(Boolean);
+      showFeedback(`✓ Imported ${parts.join(' and ')} from ${anchorNode.name}'s network`);
     } catch (err) {
       alert('Could not import network: ' + err.message);
     }
