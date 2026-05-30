@@ -70,11 +70,19 @@ svg {
   fill: none;
 }
 
-.link-to-me    { stroke: rgba(255, 255, 255, 0.09); }
-.link-secondary { stroke: rgba(255, 255, 255, 0.05); stroke-dasharray: 2 6; }
+.link-extra { stroke-dasharray: 5 4; stroke-width: 1.5; opacity: 0.5; }
 
 .node-group { cursor: pointer; }
 .node-group:hover .node-ring { opacity: 1 !important; }
+
+/* Link pick mode: crosshair cursor and pulsing rings on non-source nodes */
+#svg.link-pick-active .node-group { cursor: crosshair; }
+#svg.link-pick-active .node-group .node-ring { opacity: 0.7 !important; animation: pick-pulse 1.4s ease-in-out infinite; }
+
+@keyframes pick-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
 
 .node-ring {
   fill: none;
@@ -298,7 +306,22 @@ svg {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-dim);
   border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
+
+.tt-conn-remove {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 0;
+  font-size: 9px;
+  line-height: 1;
+}
+.tt-conn-remove:hover { opacity: 1; }
 
 .tt-actions {
   display: flex;
@@ -516,6 +539,15 @@ svg {
   white-space: nowrap;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
   min-width: 130px;
+}
+
+/* Edit panel dropdown escapes the side panel via fixed positioning */
+#edit-type-menu {
+  position: fixed;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  z-index: 200;
 }
 
 .type-dropdown-menu.open { display: flex; }

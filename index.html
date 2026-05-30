@@ -55,15 +55,23 @@
       </div>
       <div class="edit-field">
         <label class="edit-label">Type</label>
-        <select class="edit-input edit-select" id="edit-type">
-          <option value="partner">Partner</option>
-          <option value="friend">Friend</option>
-          <option value="dating">Dating</option>
-          <option value="crush">Crush</option>
-          <option value="fling">Fling</option>
-          <option value="ex">Ex</option>
-          <option value="other">Other</option>
-        </select>
+        <div id="edit-type-dropdown" class="type-dropdown">
+          <button type="button" class="type-dropdown-btn" onclick="toggleEditTypeDropdown(event)">
+            <span id="edit-type-dot" class="td-dot" style="background:#c9b8ff"></span>
+            <span id="edit-type-label">Partner</span>
+            <span class="td-chevron">▾</span>
+          </button>
+          <div id="edit-type-menu" class="type-dropdown-menu">
+            <div class="td-option" data-value="partner" onclick="selectEditType('partner')"><span class="td-dot" style="background:#c9b8ff"></span>Partner</div>
+            <div class="td-option" data-value="friend"  onclick="selectEditType('friend')" ><span class="td-dot" style="background:#ff9eb5"></span>Friend</div>
+            <div class="td-option" data-value="dating"  onclick="selectEditType('dating')" ><span class="td-dot" style="background:#7dd4b8"></span>Dating</div>
+            <div class="td-option" data-value="crush"   onclick="selectEditType('crush')"  ><span class="td-dot" style="background:#ff5c8a"></span>Crush</div>
+            <div class="td-option" data-value="fling"   onclick="selectEditType('fling')"  ><span class="td-dot" style="background:#f4a868"></span>Fling</div>
+            <div class="td-option" data-value="ex"      onclick="selectEditType('ex')"     ><span class="td-dot" style="background:#9999bb"></span>Ex</div>
+            <div class="td-option" data-value="other"   onclick="selectEditType('other')"  ><span class="td-dot" style="background:#aaaaaa"></span>Other</div>
+          </div>
+        </div>
+        <input type="hidden" id="edit-type" value="partner">
       </div>
       <div class="edit-field">
         <label class="edit-label">Location</label>

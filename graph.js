@@ -38,14 +38,16 @@ const TYPE_SIZES = {
 const STORAGE_KEY = 'ru-graph';
 
 let nodes = [
-  { id: 'me', name: 'You', type: 'me', location: null, note: '', parentId: null }
+  { id: 'me', name: 'You', type: 'me', location: null, note: '' }
 ];
 
-let links = [];
+let links      = [];
+let extraLinks = []; // all connections: [{ source: id, target: id }]
 
-let connectMode    = null;
-let selectedNodeId = null;
-let editingNodeId  = null;
+let connectMode          = null;
+let linkPickMode         = null;
+let selectedNodeId       = null;
+let editingNodeId        = null;
 let pendingNetworkNodeId = null;
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
@@ -81,6 +83,13 @@ let linkSel, nodeSel, simulation;
 const getColor   = t => TYPE_COLORS[t] || '#888';
 const getSize    = t => TYPE_SIZES[t]  || 34;
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
+const nodeKey    = n => (n.name || '').toLowerCase() + '|' + (n.location || '').toLowerCase();
+
+function linkExists(a, b) {
+  return extraLinks.some(l =>
+    (l.source === a && l.target === b) || (l.source === b && l.target === a)
+  );
+}
 
 function parseNodeArray(arr) {
   const result = arr.map(n => ({
@@ -88,21 +97,36 @@ function parseNodeArray(arr) {
     name:     n.name     || 'Unknown',
     type:     n.id === 'me' ? 'me' : (n.type || 'other'),
     location: n.location || null,
-    note:     n.note     || '',
-    parentId: n.parentId || null
+    note:     n.note     || ''
   }));
   if (!result.find(n => n.id === 'me')) {
-    result.unshift({ id: 'me', name: 'You', type: 'me', location: null, note: '', parentId: null });
+    result.unshift({ id: 'me', name: 'You', type: 'me', location: null, note: '' });
   }
   return result;
 }
 
+// Convert old parentId-based save data into extraLinks entries
+function extraLinksFromLegacyNodes(rawNodes) {
+  const out = [];
+  rawNodes.forEach(n => {
+    if (n.id === 'me') return;
+    const parent = n.parentId || 'me';
+    const exists = out.some(l =>
+      (l.source === parent && l.target === n.id) ||
+      (l.source === n.id   && l.target === parent)
+    );
+    if (!exists) out.push({ source: parent, target: n.id });
+  });
+  return out;
+}
+
 function saveToStorage() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(
-    nodes.map(({ id, name, type, location, note, parentId }) =>
-      ({ id, name, type, location: location || null, note: note || '', parentId: parentId || null })
-    )
-  ));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    nodes: nodes.map(({ id, name, type, location, note }) =>
+      ({ id, name, type, location: location || null, note: note || '' })
+    ),
+    extraLinks
+  }));
 }
 
 function loadFromStorage() {
@@ -110,19 +134,30 @@ function loadFromStorage() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    if (Array.isArray(saved) && saved.length) nodes = parseNodeArray(saved);
+
+    if (Array.isArray(saved)) {
+      // Very old format: plain node array with parentId fields
+      if (saved.length) {
+        nodes      = parseNodeArray(saved);
+        extraLinks = extraLinksFromLegacyNodes(saved);
+      }
+    } else if (saved && saved.nodes) {
+      if (saved.nodes.length) nodes = parseNodeArray(saved.nodes);
+      if (Array.isArray(saved.extraLinks) && saved.extraLinks.length) {
+        extraLinks = saved.extraLinks;
+      } else {
+        // v2 save that still had parentId but no extraLinks
+        extraLinks = extraLinksFromLegacyNodes(saved.nodes);
+      }
+    }
   } catch (_) {}
 }
 
 function rebuildLinks() {
-  links = [];
-  nodes.forEach(n => {
-    if (n.id === 'me') return;
-    const parent = n.parentId || 'me';
-    if (nodes.find(x => x.id === parent)) {
-      links.push({ source: parent, target: n.id, secondary: parent !== 'me' });
-    }
-  });
+  const nodeIds = new Set(nodes.map(n => n.id));
+  links = extraLinks
+    .filter(l => nodeIds.has(l.source) && nodeIds.has(l.target))
+    .map(l => ({ source: l.source, target: l.target }));
 }
 
 // ── Graph ─────────────────────────────────────────────────────────────────────
@@ -134,11 +169,11 @@ function buildGraph() {
   linkSel = g.selectAll('.link')
     .data(links)
     .join('line')
-    .attr('class', d => 'link ' + (d.secondary ? 'link-secondary' : 'link-to-me'))
+    .attr('class', 'link link-extra')
     .style('stroke', d => {
-      const tid  = d.target.id || d.target;
-      const tn   = nodes.find(n => n.id === tid);
-      return tn ? getColor(tn.type) + (d.secondary ? '22' : '30') : 'rgba(255,255,255,0.06)';
+      const sid = d.source.id || d.source;
+      const sn  = nodes.find(n => n.id === sid);
+      return sn ? getColor(sn.type) + '55' : 'rgba(255,255,255,0.2)';
     });
 
   nodeSel = g.selectAll('.node-group')
@@ -149,63 +184,61 @@ function buildGraph() {
       .on('start', dragStart)
       .on('drag',  dragged)
       .on('end',   dragEnd))
-    .on('click', (e, d) => { e.stopPropagation(); showPanel(e, d); });
+    .on('click', (e, d) => {
+      e.stopPropagation();
+      if (linkPickMode) {
+        if (d.id !== linkPickMode) createExtraLink(linkPickMode, d.id);
+        return;
+      }
+      showPanel(e, d);
+    });
 
   nodeSel.each(function(d) {
     const sel = d3.select(this);
     const r   = getSize(d.type);
     const col = getColor(d.type);
-    const sec = d.parentId && d.parentId !== 'me';
 
     sel.append('circle')
       .attr('class', 'node-ring')
       .attr('r', r + 9)
       .style('stroke', col)
       .style('stroke-dasharray', '3 5')
-      .style('opacity', sec ? 0.2 : 0.35);
+      .style('opacity', 0.35);
 
     sel.append('circle')
       .attr('class', 'node-bg')
       .attr('r', r)
-      .style('fill', d.type === 'me' ? 'url(#grad-me)' : col + (sec ? '10' : '18'))
+      .style('fill', d.type === 'me' ? 'url(#grad-me)' : col + '18')
       .style('stroke', col)
-      .style('stroke-width', d.type === 'me' ? 2 : (sec ? 1 : 1.5))
-      .style('stroke-opacity', sec ? 0.5 : 1);
+      .style('stroke-width', d.type === 'me' ? 2 : 1.5);
 
     sel.append('text')
       .attr('class', 'node-emoji')
       .attr('y', d.type === 'me' ? -14 : -7)
       .text(TYPE_EMOJIS[d.type] || '·')
       .style('fill', col)
-      .style('font-size', d.type === 'me' ? '17px' : (sec ? '11px' : '13px'))
-      .style('opacity', sec ? 0.6 : 1);
+      .style('font-size', d.type === 'me' ? '17px' : '13px');
 
     sel.append('text')
       .attr('class', 'node-label')
       .attr('y', 6)
       .text(d.name)
       .style('fill', col)
-      .style('opacity', sec ? 0.7 : 1)
-      .style('font-size', sec ? '10px' : '11px');
+      .style('font-size', '11px');
 
     if (d.location) {
       sel.append('text')
         .attr('class', 'node-sublabel')
         .attr('y', 17)
-        .text(d.location)
-        .style('opacity', sec ? 0.5 : 1);
+        .text(d.location);
     }
-
   });
 
   if (simulation) simulation.stop();
 
   simulation = d3.forceSimulation(nodes)
-    .force('link', d3.forceLink(links).id(d => d.id)
-      .distance(d => d.secondary ? 130 : 200)
-      .strength(d  => d.secondary ? 0.7  : 0.5))
-    .force('charge', d3.forceManyBody()
-      .strength(d => d.parentId && d.parentId !== 'me' ? -180 : -300))
+    .force('link', d3.forceLink(links).id(d => d.id).distance(180).strength(0.4))
+    .force('charge', d3.forceManyBody().strength(-300))
     .force('collision', d3.forceCollide().radius(d => getSize(d.type) + 20))
     .on('tick', ticked);
 
@@ -237,6 +270,7 @@ function dragEnd(e, d) {
 // ── Side panel: VIEW ──────────────────────────────────────────────────────────
 
 function showPanel(e, d) {
+  if (linkPickMode) return;
   if (selectedNodeId === d.id && spEl.classList.contains('visible')) {
     hidePanel(); return;
   }
@@ -245,20 +279,19 @@ function showPanel(e, d) {
   spEdit.style.display = 'none';
   spView.style.display = 'block';
 
-  const col      = getColor(d.type);
-  const children = nodes.filter(n => n.parentId === d.id);
-  const parentN  = d.parentId ? nodes.find(n => n.id === d.parentId) : null;
+  const col   = getColor(d.type);
+  const peers = extraLinks
+    .filter(l => l.source === d.id || l.target === d.id)
+    .map(l => nodes.find(n => n.id === (l.source === d.id ? l.target : l.source)))
+    .filter(Boolean);
 
   let connHTML = '';
-  if (parentN || children.length) {
+  if (peers.length) {
     connHTML = `<div class="tt-divider"></div>
       <div class="tt-section-label">Connections</div>
       <div class="tt-connections">`;
-    if (parentN) {
-      connHTML += `<span class="tt-conn-chip" style="border-color:${getColor(parentN.type)}44;color:${getColor(parentN.type)}cc;">↑ ${parentN.name}</span>`;
-    }
-    children.forEach(c => {
-      connHTML += `<span class="tt-conn-chip" style="border-color:${getColor(c.type)}44;color:${getColor(c.type)}cc;">↳ ${c.name}</span>`;
+    peers.forEach(p => {
+      connHTML += `<span class="tt-conn-chip tt-conn-peer" style="border-color:${getColor(p.type)}44;color:${getColor(p.type)}cc;">⇌ ${p.name}<button class="tt-conn-remove" onclick="removeExtraLink('${d.id}','${p.id}')">✕</button></span>`;
     });
     connHTML += `</div>`;
   }
@@ -272,6 +305,7 @@ function showPanel(e, d) {
     ${connHTML}
     <div class="tt-actions">
       <button class="btn-tt btn-tt-neutral" onclick="openEdit('${d.id}')">✎ Edit ${isMe ? 'your info' : d.name}</button>
+      <button class="btn-tt btn-tt-neutral" onclick="startLinkPickMode('${d.id}')">⇌ Link to existing node</button>
       <button class="btn-tt btn-tt-primary" onclick="startConnectMode('${d.id}','${d.name}')">+ Add connection to ${isMe ? 'you' : d.name}</button>
       <button class="btn-tt btn-tt-import" onclick="triggerNetworkImport('${d.id}')">↑ Import ${isMe ? 'your' : d.name + "'s"} network</button>
       ${!isMe ? `<button class="btn-tt btn-tt-danger" onclick="removePerson('${d.id}')">Remove ${d.name}</button>` : ''}
@@ -286,7 +320,10 @@ function hidePanel() {
   spEl.classList.remove('visible');
 }
 
-svg.on('click', hidePanel);
+svg.on('click', () => {
+  if (linkPickMode) { cancelLinkPickMode(); return; }
+  hidePanel();
+});
 
 // ── Side panel: EDIT ──────────────────────────────────────────────────────────
 
@@ -295,12 +332,14 @@ function openEdit(id) {
   if (!d) return;
   editingNodeId = id;
 
-  document.getElementById('edit-title').textContent    = `Editing ${d.name}`;
-  document.getElementById('edit-name').value           = d.name;
-  document.getElementById('edit-type').value           = d.type;
-  document.getElementById('edit-location').value       = d.location || '';
-  document.getElementById('edit-note').value           = d.note     || '';
-  document.getElementById('edit-type').disabled        = (id === 'me');
+  document.getElementById('edit-title').textContent = `Editing ${d.name}`;
+  document.getElementById('edit-name').value         = d.name;
+  document.getElementById('edit-location').value     = d.location || '';
+  document.getElementById('edit-note').value         = d.note     || '';
+
+  selectEditType(d.type || 'other');
+  document.getElementById('edit-type-dropdown').style.opacity       = id === 'me' ? '0.4' : '1';
+  document.getElementById('edit-type-dropdown').style.pointerEvents = id === 'me' ? 'none' : '';
 
   spView.style.display = 'none';
   spEdit.style.display = 'block';
@@ -319,7 +358,7 @@ function saveEdit() {
   if (!d) return;
 
   d.name     = document.getElementById('edit-name').value.trim()     || d.name;
-  if (d.id !== 'me') d.type = document.getElementById('edit-type').value;
+  if (d.id !== 'me') d.type = document.getElementById('edit-type').value || d.type;
   d.location = document.getElementById('edit-location').value.trim() || null;
   d.note     = document.getElementById('edit-note').value.trim()     || '';
 
@@ -340,12 +379,12 @@ document.getElementById('edit-note').addEventListener('keydown', e => {
   if (e.key === 'Enter') saveEdit();
 });
 
-// ── Connect mode ──────────────────────────────────────────────────────────────
+// ── Connect mode (add new node linked to existing) ────────────────────────────
 
 function startConnectMode(nodeId, nodeName) {
   connectMode = nodeId;
   hidePanel();
-  document.getElementById('connect-to-label').textContent  = `→ ${nodeName}:`;
+  document.getElementById('connect-to-label').textContent   = `→ ${nodeName}:`;
   document.getElementById('connect-to-label').style.display = 'block';
   document.getElementById('connect-cancel').style.display   = 'block';
   document.getElementById('name-input').focus();
@@ -359,6 +398,59 @@ function cancelConnectMode() {
   document.getElementById('location-input').value           = '';
 }
 
+// ── Link pick mode (connect two existing nodes) ───────────────────────────────
+
+function startLinkPickMode(fromId) {
+  const from = nodes.find(n => n.id === fromId);
+  if (!from) return;
+  linkPickMode   = fromId;
+  selectedNodeId = fromId;
+
+  svgEl.classList.add('link-pick-active');
+
+  spView.innerHTML = `
+    <div class="tt-name" style="color:${getColor(from.type)}">${from.name}</div>
+    <div class="tt-row" style="margin-top:8px;">Click any other node to link it to <strong>${from.name}</strong>.</div>
+    <div class="tt-actions">
+      <button class="btn-tt btn-tt-neutral" onclick="cancelLinkPickMode()">✕ Cancel</button>
+    </div>`;
+  spEdit.style.display = 'none';
+  spView.style.display = 'block';
+  spEl.classList.add('visible');
+}
+
+function cancelLinkPickMode() {
+  linkPickMode = null;
+  svgEl.classList.remove('link-pick-active');
+  hidePanel();
+}
+
+function createExtraLink(sourceId, targetId) {
+  if (!linkExists(sourceId, targetId)) {
+    extraLinks.push({ source: sourceId, target: targetId });
+    rebuildLinks();
+    buildGraph();
+    simulation.alpha(0.2).restart();
+    saveToStorage();
+  }
+  linkPickMode = null;
+  svgEl.classList.remove('link-pick-active');
+  const src = nodes.find(n => n.id === sourceId);
+  if (src) showPanel({ stopPropagation: () => {} }, src);
+}
+
+function removeExtraLink(idA, idB) {
+  extraLinks = extraLinks.filter(l =>
+    !((l.source === idA && l.target === idB) || (l.source === idB && l.target === idA))
+  );
+  rebuildLinks();
+  buildGraph();
+  simulation.alpha(0.2).restart();
+  saveToStorage();
+  const d = nodes.find(n => n.id === idA);
+  if (d) showPanel({ stopPropagation: () => {} }, d);
+}
+
 // ── Add / Remove ──────────────────────────────────────────────────────────────
 
 function addPerson() {
@@ -367,22 +459,23 @@ function addPerson() {
   const location = document.getElementById('location-input').value.trim();
   if (!name) return;
 
-  const parentId   = connectMode || null;
+  const fromId     = connectMode || 'me';
+  const fromNode   = nodes.find(n => n.id === fromId);
   const id         = name.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
-  const parentNode = nodes.find(n => n.id === (parentId || 'me'));
   const angle      = Math.random() * 2 * Math.PI;
   const dist       = 200 + Math.random() * 60;
-  const px         = (parentNode && parentNode.x) ? parentNode.x : width  / 2;
-  const py         = (parentNode && parentNode.y) ? parentNode.y : height / 2;
+  const px         = (fromNode && fromNode.x) ? fromNode.x : width  / 2;
+  const py         = (fromNode && fromNode.y) ? fromNode.y : height / 2;
 
   nodes.push({
     id, name, type,
     location: location || null,
     note: '',
-    parentId,
     x: px + Math.cos(angle) * dist,
     y: py + Math.sin(angle) * dist
   });
+
+  extraLinks.push({ source: fromId, target: id });
 
   document.getElementById('name-input').value     = '';
   document.getElementById('location-input').value = '';
@@ -394,12 +487,8 @@ function addPerson() {
 }
 
 function removePerson(id) {
-  function descendants(nid) {
-    const kids = nodes.filter(n => n.parentId === nid).map(n => n.id);
-    return kids.reduce((a, k) => a.concat(k, descendants(k)), []);
-  }
-  const gone = new Set([id, ...descendants(id)]);
-  nodes = nodes.filter(n => !gone.has(n.id));
+  nodes      = nodes.filter(n => n.id !== id);
+  extraLinks = extraLinks.filter(l => l.source !== id && l.target !== id);
   hidePanel();
   rebuildLinks();
   buildGraph();
@@ -409,7 +498,8 @@ function removePerson(id) {
 
 function clearAll() {
   if (!confirm('Clear all relationships? This cannot be undone.')) return;
-  nodes = [{ id: 'me', name: 'You', type: 'me', location: null, note: '', parentId: null }];
+  nodes      = [{ id: 'me', name: 'You', type: 'me', location: null, note: '' }];
+  extraLinks = [];
   hidePanel();
   rebuildLinks();
   buildGraph();
@@ -421,16 +511,16 @@ function clearAll() {
 
 function exportJSON() {
   const data = {
-    version:  1,
+    version:  3,
     exported: new Date().toISOString(),
     nodes: nodes.map(n => ({
       id:       n.id,
       name:     n.name,
       type:     n.type,
       location: n.location || null,
-      note:     n.note     || '',
-      parentId: n.parentId || null
-    }))
+      note:     n.note     || ''
+    })),
+    extraLinks
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a    = document.createElement('a');
@@ -452,6 +542,9 @@ function importJSON(event) {
       if (!data.nodes || !Array.isArray(data.nodes)) throw new Error('Invalid format');
 
       nodes = parseNodeArray(data.nodes);
+      extraLinks = Array.isArray(data.extraLinks) && data.extraLinks.length
+        ? data.extraLinks
+        : extraLinksFromLegacyNodes(data.nodes);
 
       hidePanel();
       rebuildLinks();
@@ -493,24 +586,20 @@ function importNetworkJSON(event) {
       const prefix    = anchorId + '_net_' + Date.now() + '_';
       const theirMe   = data.nodes.find(n => n.id === 'me' || n.type === 'me');
       const theirMeId = theirMe ? theirMe.id : null;
+      const mapId     = id => (id === theirMeId) ? anchorId : prefix + id;
 
-      const mapId = id => (id === theirMeId) ? anchorId : prefix + id;
+      const existingKeys = new Set(nodes.map(nodeKey));
 
       const newNodes = data.nodes
         .filter(n => n.id !== theirMeId)
         .map(n => {
-          const exists = nodes.find(x =>
-            x.name.toLowerCase() === (n.name || '').toLowerCase() && x.id !== 'me'
-          );
-          if (exists) return null;
-          const rawParent = n.parentId || theirMeId;
+          if (existingKeys.has(nodeKey(n))) return null;
           return {
             id:       mapId(n.id),
             name:     n.name     || 'Unknown',
             type:     n.type     || 'other',
             location: n.location || null,
-            note:     n.note     || '',
-            parentId: mapId(rawParent)
+            note:     n.note     || ''
           };
         })
         .filter(Boolean);
@@ -521,6 +610,30 @@ function importNetworkJSON(event) {
         return;
       }
 
+      // Build links from the imported data
+      const theirLinks = Array.isArray(data.extraLinks) && data.extraLinks.length
+        ? data.extraLinks
+        : extraLinksFromLegacyNodes(data.nodes);
+
+      const addedIds  = new Set(newNodes.map(n => n.id));
+      const allIds    = new Set(nodes.map(n => n.id));
+      newNodes.forEach(n => allIds.add(n.id));
+
+      const newLinks = theirLinks
+        .map(l => ({ source: mapId(l.source), target: mapId(l.target) }))
+        .filter(l => allIds.has(l.source) && allIds.has(l.target))
+        .filter(l => !linkExists(l.source, l.target));
+
+      // Always link anchor → imported node if not already connected
+      newNodes.forEach(n => {
+        if (!linkExists(anchorId, n.id) && !newLinks.some(l =>
+          (l.source === anchorId && l.target === n.id) ||
+          (l.source === n.id && l.target === anchorId)
+        )) {
+          newLinks.push({ source: anchorId, target: n.id });
+        }
+      });
+
       newNodes.forEach(n => {
         const angle = Math.random() * 2 * Math.PI;
         const dist  = 130 + Math.random() * 80;
@@ -528,7 +641,8 @@ function importNetworkJSON(event) {
         n.y = (anchorNode.y || height / 2) + Math.sin(angle) * dist;
       });
 
-      nodes = nodes.concat(newNodes);
+      nodes      = nodes.concat(newNodes);
+      extraLinks = extraLinks.concat(newLinks);
       rebuildLinks();
       buildGraph();
       simulation.alpha(0.6).restart();
@@ -548,7 +662,7 @@ function importNetworkJSON(event) {
 
 function showFeedback(msg) {
   const fb = document.getElementById('import-feedback');
-  fb.textContent  = msg;
+  fb.textContent   = msg;
   fb.style.display = 'block';
   setTimeout(() => {
     fb.style.display = 'none';
@@ -556,7 +670,7 @@ function showFeedback(msg) {
   }, 3000);
 }
 
-// ── Type dropdown ─────────────────────────────────────────────────────────────
+// ── Type dropdown (add panel) ─────────────────────────────────────────────────
 
 let typeDropdownOpen = false;
 
@@ -567,20 +681,51 @@ function toggleTypeDropdown(e) {
 }
 
 function selectType(value) {
-  document.getElementById('type-select').value = value;
-  document.getElementById('type-dot').style.background = getColor(value);
-  document.getElementById('type-label').textContent = capitalize(value);
-  document.querySelectorAll('.td-option').forEach(o =>
+  document.getElementById('type-select').value             = value;
+  document.getElementById('type-dot').style.background     = getColor(value);
+  document.getElementById('type-label').textContent        = capitalize(value);
+  document.querySelectorAll('#type-menu .td-option').forEach(o =>
     o.classList.toggle('selected', o.dataset.value === value)
   );
   document.getElementById('type-menu').classList.remove('open');
   typeDropdownOpen = false;
 }
 
+// ── Type dropdown (edit panel) ────────────────────────────────────────────────
+
+let editTypeDropdownOpen = false;
+
+function toggleEditTypeDropdown(e) {
+  e.stopPropagation();
+  editTypeDropdownOpen = !editTypeDropdownOpen;
+  const menu = document.getElementById('edit-type-menu');
+  menu.classList.toggle('open', editTypeDropdownOpen);
+  if (editTypeDropdownOpen) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    menu.style.top  = (rect.bottom + 6) + 'px';
+    menu.style.left = rect.left + 'px';
+  }
+}
+
+function selectEditType(value) {
+  document.getElementById('edit-type').value                    = value;
+  document.getElementById('edit-type-dot').style.background     = getColor(value);
+  document.getElementById('edit-type-label').textContent        = capitalize(value);
+  document.querySelectorAll('#edit-type-menu .td-option').forEach(o =>
+    o.classList.toggle('selected', o.dataset.value === value)
+  );
+  document.getElementById('edit-type-menu').classList.remove('open');
+  editTypeDropdownOpen = false;
+}
+
 document.addEventListener('click', () => {
   if (typeDropdownOpen) {
     typeDropdownOpen = false;
     document.getElementById('type-menu').classList.remove('open');
+  }
+  if (editTypeDropdownOpen) {
+    editTypeDropdownOpen = false;
+    document.getElementById('edit-type-menu').classList.remove('open');
   }
 });
 
@@ -598,9 +743,7 @@ window.addEventListener('resize', () => {
   svgEl.setAttribute('viewBox', `0 0 ${width} ${height}`);
   const me = nodes.find(n => n.id === 'me');
   if (me) { me.fx = width / 2; me.fy = height / 2; }
-  if (simulation) {
-    simulation.alpha(0.3).restart();
-  }
+  if (simulation) simulation.alpha(0.3).restart();
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
