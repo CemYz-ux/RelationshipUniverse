@@ -1,5 +1,5 @@
 import { state, dom } from './state.js';
-import { loadFromStorage, saveToStorage, exportJSON, importJSON, importNetworkJSON, triggerNetworkImport } from './storage.js';
+import { loadFromStorage, saveToStorage, exportJSON, importJSON, importNetworkJSON, triggerNetworkImport, shareAsURL, checkShareURL, importNetworkFromURL } from './storage.js';
 import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback } from './graph.js';
 import { showPanel, hidePanel } from './sidePanel.js';
 import { openEdit, cancelEdit, saveEdit, editDropdown } from './editPanel.js';
@@ -51,7 +51,11 @@ Object.assign(window, {
   startConnectMode, startLinkPickMode, cancelLinkPickMode,
   removePerson, clearAll,
   removeExtraLink, createExtraLink,
-  exportJSON, triggerNetworkImport,
+  exportJSON, triggerNetworkImport, shareAsURL,
+  importFromURL: (nodeId) => {
+    const url = document.getElementById('sp-url-input')?.value?.trim();
+    if (url) importNetworkFromURL(nodeId, url);
+  },
   toggleTypeDropdown:     e => addDropdown.toggle(e),
   selectType:             v => addDropdown.select(v),
   toggleEditTypeDropdown: e => editDropdown.toggle(e),
@@ -75,3 +79,4 @@ document.getElementById('import-network-input').addEventListener('change', impor
 loadFromStorage();
 rebuildLinks();
 buildGraph();
+checkShareURL();

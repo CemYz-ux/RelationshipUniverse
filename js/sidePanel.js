@@ -44,6 +44,11 @@ export function showPanel(e, d) {
       <button class="btn-tt btn-tt-primary" onclick="startConnectMode('${d.id}','${d.name}')">+ Add connection to ${isMe ? 'you' : d.name}</button>
       <button class="btn-tt btn-tt-import" onclick="triggerNetworkImport('${d.id}')">↑ Import ${isMe ? 'your' : d.name + "'s"} network</button>
       ${!isMe ? `<button class="btn-tt btn-tt-danger" onclick="removePerson('${d.id}')">Remove ${d.name}</button>` : ''}
+    </div>
+    <div class="tt-divider"></div>
+    <div class="tt-url-import">
+      <input class="tt-url-input" type="text" placeholder="Paste share URL to import…" id="sp-url-input" />
+      <button class="btn-tt btn-tt-import" onclick="importFromURL('${d.id}')">↑ Import</button>
     </div>`;
 
   dom.spEl.classList.add('visible');
