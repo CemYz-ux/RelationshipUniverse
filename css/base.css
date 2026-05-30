@@ -20,6 +20,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;
   height: 100vh;
+  height: 100dvh; /* dynamic viewport: excludes browser chrome on mobile */
   overflow: hidden;
   display: flex;
   flex-direction: column;
