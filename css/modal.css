@@ -26,7 +26,9 @@
   align-items: center;
   gap: 14px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
-  width: 280px;
+  width: auto; /* let content determine width */
+  min-width: 320px;
+  max-width: 90vw;
 }
 
 .qr-label {

@@ -138,11 +138,12 @@ function _scanWithJsQR(video, status) {
 }
 
 function _onCodeFound(url, status) {
+  const nodeId = _importNodeId; // capture before hideImportModal clears it
   _stopScan();
   status.textContent = '✓ QR code detected!';
   setTimeout(() => {
     hideImportModal();
-    importNetworkFromURL(_importNodeId, url);
+    importNetworkFromURL(nodeId, url);
   }, 400);
 }
 
