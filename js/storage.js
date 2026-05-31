@@ -231,22 +231,74 @@ async function decompressFromBase64(encoded) {
   return JSON.parse(new TextDecoder().decode(buf));
 }
 
-export async function generateShareURL() {
-  const data = {
-    version:    3,
-    nodes:      state.nodes.map(({ id, name, type, location, note }) =>
-                  ({ id, name, type, location: location || null, note: note || '' })),
-    extraLinks: state.extraLinks
+// ── Compact v4 serialisation ──────────────────────────────────────────────────
+// Nodes become [{n,t,l?,o?}] arrays; links become [[srcIdx,tgtIdx]] pairs.
+// Null/empty fields are omitted. Saves ~50-60% vs the v3 format.
+
+function toCompact(nodes, extraLinks) {
+  const idx = new Map(nodes.map((n, i) => [n.id, i]));
+  return {
+    v: 4,
+    n: nodes.map(n => {
+      const e = { n: n.name, t: n.type };
+      if (n.location) e.l = n.location;
+      if (n.note)     e.o = n.note;
+      return e;
+    }),
+    l: extraLinks
+      .map(e => [idx.get(e.source), idx.get(e.target)])
+      .filter(([a, b]) => a !== undefined && b !== undefined)
   };
-  const encoded = await compressToBase64(data);
+}
+
+function fromCompact(data) {
+  const nodes = (data.n || []).map((e, i) => ({
+    id:       i === 0 ? 'me' : e.n.toLowerCase().replace(/\s+/g, '_') + '_' + i,
+    name:     e.n,
+    type:     e.t,
+    location: e.l || null,
+    note:     e.o || ''
+  }));
+  const extraLinks = (data.l || [])
+    .map(([a, b]) => ({ source: nodes[a]?.id, target: nodes[b]?.id }))
+    .filter(l => l.source && l.target);
+  return { nodes, extraLinks };
+}
+
+// Handles both v4 (compact) and legacy v3 formats
+function normaliseShareData(raw) {
+  if (raw.v === 4) return fromCompact(raw);
+  return {
+    nodes:      raw.nodes      || [],
+    extraLinks: raw.extraLinks || []
+  };
+}
+
+export async function generateShareURL() {
+  const encoded = await compressToBase64(toCompact(state.nodes, state.extraLinks));
   return `${location.origin}${location.pathname}#share=${encoded}`;
 }
 
 export async function shareAsURL() {
   try {
-    const url = await generateShareURL();
-    await navigator.clipboard.writeText(url);
-    showFeedback('✓ Share link copied to clipboard!');
+    const url   = await generateShareURL();
+    const me    = state.nodes.find(n => n.id === 'me');
+    const label = (me?.name && me.name !== 'You')
+      ? `${me.name}'s Relationship Universe`
+      : 'My Relationship Universe';
+
+    // Copy as rich HTML link so it pastes as a hyperlink in email / docs / chat.
+    // Falls back to plain text if ClipboardItem is not supported.
+    try {
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/html':  new Blob([`<a href="${url}">${label}</a>`], { type: 'text/html' }),
+        'text/plain': new Blob([url], { type: 'text/plain' }),
+      })]);
+    } catch {
+      await navigator.clipboard.writeText(url);
+    }
+
+    showFeedback(`✓ "${label}" link copied!`);
   } catch (err) {
     alert('Could not generate share link: ' + err.message);
   }
@@ -257,11 +309,9 @@ export async function importNetworkFromURL(nodeId, url) {
   if (!match) { alert('No valid share link found in that URL.'); return; }
 
   try {
-    const data = await decompressFromBase64(match[1]);
-    if (!data.nodes || !Array.isArray(data.nodes)) throw new Error('Invalid format');
+    const data = normaliseShareData(await decompressFromBase64(match[1]));
+    if (!Array.isArray(data.nodes)) throw new Error('Invalid format');
 
-    // Reuse the network import logic by temporarily setting pendingNetworkNodeId
-    // and synthesising a fake file event — instead, call the core logic directly
     const anchorId   = nodeId;
     const anchorNode = state.nodes.find(n => n.id === anchorId);
     if (!anchorNode) return;
@@ -339,8 +389,8 @@ export async function checkShareURL() {
   history.replaceState(null, '', location.pathname);
 
   try {
-    const data = await decompressFromBase64(hash.slice(7));
-    if (!data.nodes || !Array.isArray(data.nodes)) return;
+    const data = normaliseShareData(await decompressFromBase64(hash.slice(7)));
+    if (!Array.isArray(data.nodes) || !data.nodes.length) return;
 
     const hasExisting = state.nodes.length > 1 || state.extraLinks.length > 0;
     const msg = hasExisting
@@ -350,7 +400,7 @@ export async function checkShareURL() {
     if (!confirm(msg)) return;
 
     state.nodes      = parseNodeArray(data.nodes);
-    state.extraLinks = Array.isArray(data.extraLinks) && data.extraLinks.length
+    state.extraLinks = data.extraLinks.length
       ? data.extraLinks
       : extraLinksFromLegacyNodes(data.nodes);
 
