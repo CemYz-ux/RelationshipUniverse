@@ -190,6 +190,12 @@
 }
 .edit-input:focus { border-color: rgba(201, 184, 255, 0.4); }
 
+#edit-note {
+  resize: vertical;
+  min-height: 68px;
+  line-height: 1.5;
+}
+
 .edit-actions {
   display: flex;
   gap: 6px;

@@ -88,7 +88,8 @@ Each flow describes the steps a user takes and the expected outcome.
 **Steps:**
 1. Click a node → **✎** → **✎ Edit [Name]**.
 2. Update any fields. The type uses the same styled dropdown as the add panel.
-3. Click **Save**.
+3. The **Note** field is a multi-line textarea (up to 200 characters). Press Enter for a new line; press **Ctrl+Enter** (or **⌘+Enter** on Mac) to save directly from the note field.
+4. Click **Save**.
 
 **Expected outcome:**
 - Node label and colour update immediately.

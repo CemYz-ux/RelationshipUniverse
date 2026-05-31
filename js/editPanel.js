@@ -63,7 +63,7 @@ export function saveEdit() {
   if (updated) showPanel({ stopPropagation: () => {} }, updated);
 }
 
-// Enter key on note field saves
+// Ctrl+Enter on note field saves; plain Enter inserts newline
 document.getElementById('edit-note').addEventListener('keydown', e => {
-  if (e.key === 'Enter') saveEdit();
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) saveEdit();
 });
