@@ -47,10 +47,11 @@ export function hideImportModal() {
 }
 
 export function importFromURLInput() {
-  const url = document.getElementById('import-url-input').value.trim();
+  const url    = document.getElementById('import-url-input').value.trim();
   if (!url) return;
+  const nodeId = _importNodeId; // capture before hideImportModal clears it
   hideImportModal();
-  importNetworkFromURL(_importNodeId, url);
+  importNetworkFromURL(nodeId, url);
 }
 
 // ── Camera scanner ────────────────────────────────────────────────────────────
