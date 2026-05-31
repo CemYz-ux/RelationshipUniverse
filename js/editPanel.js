@@ -36,8 +36,10 @@ export function openEdit(id) {
 export function cancelEdit() {
   dom.spEdit.style.display = 'none';
   dom.spView.style.display = 'block';
-  state.editingNodeId = null;
-  const d = state.nodes.find(n => n.id === state.selectedNodeId);
+  const id = state.selectedNodeId;
+  state.editingNodeId  = null;
+  state.selectedNodeId = null; // clear so showPanel's toggle doesn't close the panel
+  const d = state.nodes.find(n => n.id === id);
   if (d) showPanel({ stopPropagation: () => {} }, d);
 }
 
@@ -59,7 +61,9 @@ export function saveEdit() {
   getSimulation().alpha(0.3).restart();
   saveToStorage();
 
-  const updated = state.nodes.find(n => n.id === d.id);
+  const id = d.id;
+  state.selectedNodeId = null; // clear so showPanel's toggle doesn't close the panel
+  const updated = state.nodes.find(n => n.id === id);
   if (updated) showPanel({ stopPropagation: () => {} }, updated);
 }
 
