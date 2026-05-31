@@ -165,16 +165,16 @@ export function importNetworkJSON(event) {
         .filter(l => allIds.has(l.source) && allIds.has(l.target))
         .filter(l => !linkExists(state.extraLinks, l.source, l.target));
 
-      // Ensure each truly new node has at least one connection to the anchor
+      // Only add anchor fallback for nodes that have no connections at all in
+      // the imported set — preserves the internal structure of the imported network
       newNodes.forEach(n => {
         const angle = Math.random() * 2 * Math.PI;
         const dist  = 130 + Math.random() * 80;
         n.x = (anchorNode.x || 0) + Math.cos(angle) * dist;
         n.y = (anchorNode.y || 0) + Math.sin(angle) * dist;
 
-        if (!linkExists(state.extraLinks, anchorId, n.id) &&
-            !newLinks.some(l => (l.source === anchorId && l.target === n.id) ||
-                                (l.source === n.id && l.target === anchorId))) {
+        const hasAnyLink = newLinks.some(l => l.source === n.id || l.target === n.id);
+        if (!hasAnyLink && !linkExists(state.extraLinks, anchorId, n.id)) {
           newLinks.push({ source: anchorId, target: n.id });
         }
       });
@@ -302,8 +302,9 @@ export async function importNetworkFromURL(nodeId, url) {
       const dist  = 130 + Math.random() * 80;
       n.x = (anchorNode.x || 0) + Math.cos(angle) * dist;
       n.y = (anchorNode.y || 0) + Math.sin(angle) * dist;
-      if (!linkExists(state.extraLinks, anchorId, n.id) &&
-          !newLinks.some(l => (l.source === anchorId && l.target === n.id) || (l.source === n.id && l.target === anchorId))) {
+
+      const hasAnyLink = newLinks.some(l => l.source === n.id || l.target === n.id);
+      if (!hasAnyLink && !linkExists(state.extraLinks, anchorId, n.id)) {
         newLinks.push({ source: anchorId, target: n.id });
       }
     });
