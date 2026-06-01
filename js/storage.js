@@ -284,8 +284,8 @@ export async function shareAsURL() {
     const url   = await generateShareURL();
     const me    = state.nodes.find(n => n.id === 'me');
     const label = (me?.name && me.name !== 'You')
-      ? `${me.name}'s Relationship Universe`
-      : 'My Relationship Universe';
+      ? `${me.name}'s Polymaps`
+      : 'My Polymaps';
 
     // Copy as rich HTML link so it pastes as a hyperlink in email / docs / chat.
     // Falls back to plain text if ClipboardItem is not supported.

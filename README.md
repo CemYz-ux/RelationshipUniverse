@@ -1,4 +1,4 @@
-# My Relationship Universe
+# Polymaps
 
 An interactive force-graph for mapping the people in your life. Built with D3.js — no framework, no build step, no backend.
 

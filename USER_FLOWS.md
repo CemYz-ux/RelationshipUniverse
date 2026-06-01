@@ -1,4 +1,4 @@
-# User Flows — Relationship Universe
+# User Flows — Polymaps
 
 Each flow describes the steps a user takes and the expected outcome.
 
