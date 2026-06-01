@@ -116,6 +116,34 @@ describe('fromCompact', () => {
     const { extraLinks: out } = fromCompact({ v: 4, n: [{ n: 'You', t: 'me' }] });
     expect(out).toHaveLength(0);
   });
+
+  it('handles missing n array gracefully', () => {
+    const { nodes: out, extraLinks: out2 } = fromCompact({ v: 4 });
+    expect(out).toHaveLength(0);
+    expect(out2).toHaveLength(0);
+  });
+
+  it('derives id from name (lowercased, spaces→underscores) + index', () => {
+    const { nodes: out } = fromCompact({ v: 4, n: [
+      { n: 'You', t: 'me' },
+      { n: 'Mary Jane', t: 'friend' },
+    ]});
+    expect(out[1].id).toBe('mary_jane_1');
+  });
+
+  it('drops links with out-of-bounds indices', () => {
+    const compact = { v: 4, n: [{ n: 'You', t: 'me' }, { n: 'Alice', t: 'friend' }], l: [[0, 99]] };
+    const { extraLinks: out } = fromCompact(compact);
+    expect(out).toHaveLength(0);
+  });
+
+  it('restores source and target as node ids (not indices)', () => {
+    const { nodes: outNodes, extraLinks: outLinks } = fromCompact(toCompact(nodes, extraLinks));
+    outLinks.forEach(l => {
+      expect(typeof l.source).toBe('string');
+      expect(typeof l.target).toBe('string');
+    });
+  });
 });
 
 // ── round-trip ────────────────────────────────────────────────────────────────
@@ -160,6 +188,12 @@ describe('normaliseShareData', () => {
 
   it('returns empty arrays for a bare legacy payload', () => {
     const result = normaliseShareData({ version: 3 });
+    expect(result.nodes).toEqual([]);
+    expect(result.extraLinks).toEqual([]);
+  });
+
+  it('returns empty arrays for a completely empty object', () => {
+    const result = normaliseShareData({});
     expect(result.nodes).toEqual([]);
     expect(result.extraLinks).toEqual([]);
   });

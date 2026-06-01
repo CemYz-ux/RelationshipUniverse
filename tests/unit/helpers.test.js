@@ -167,4 +167,78 @@ describe('capitalize', () => {
   it('leaves the rest unchanged', () => {
     expect(capitalize('hello world')).toBe('Hello world');
   });
+  it('handles a single character', () => {
+    expect(capitalize('a')).toBe('A');
+  });
+  it('leaves an already-capitalised string unchanged', () => {
+    expect(capitalize('Partner')).toBe('Partner');
+  });
+  it('handles an empty string without throwing', () => {
+    expect(capitalize('')).toBe('');
+  });
+});
+
+// ── nodeKey edge cases ────────────────────────────────────────────────────────
+
+describe('nodeKey — additional edge cases', () => {
+  it('trims nothing (preserves internal spaces lowercased)', () => {
+    expect(nodeKey({ name: 'Mary Jane', location: 'New York' })).toBe('mary jane|new york');
+  });
+  it('handles numeric-looking names', () => {
+    expect(nodeKey({ name: '42', location: '0' })).toBe('42|0');
+  });
+});
+
+// ── parseNodeArray — additional edge cases ────────────────────────────────────
+
+describe('parseNodeArray — additional edge cases', () => {
+  it('handles an empty array (injects me)', () => {
+    const result = parseNodeArray([]);
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('me');
+  });
+
+  it('does not inject a second me when one is already present', () => {
+    const result = parseNodeArray([{ id: 'me', name: 'You', type: 'me' }]);
+    const meNodes = result.filter(n => n.id === 'me');
+    expect(meNodes).toHaveLength(1);
+  });
+
+  it('does not modify extra fields not in the schema', () => {
+    const result = parseNodeArray([{ id: 'me' }, { id: 'a', name: 'A', type: 'friend', x: 99 }]);
+    const a = result.find(n => n.id === 'a');
+    // Only the five schema fields should be present — x is not carried through
+    expect(Object.keys(a).sort()).toEqual(['id', 'location', 'name', 'note', 'type'].sort());
+  });
+});
+
+// ── extraLinksFromLegacyNodes — additional edge cases ────────────────────────
+
+describe('extraLinksFromLegacyNodes — additional edge cases', () => {
+  it('handles nodes with unknown parentId values', () => {
+    const nodes = [{ id: 'me' }, { id: 'a', parentId: 'ghost' }];
+    const links = extraLinksFromLegacyNodes(nodes);
+    expect(links).toContainEqual({ source: 'ghost', target: 'a' });
+  });
+
+  it('does not create a link from me to itself', () => {
+    const nodes = [{ id: 'me', parentId: 'me' }];
+    const links = extraLinksFromLegacyNodes(nodes);
+    expect(links).toHaveLength(0);
+  });
+});
+
+// ── linkExists — additional edge cases ────────────────────────────────────────
+
+describe('linkExists — additional edge cases', () => {
+  it('is order-independent (b→a matches a→b entry)', () => {
+    const links = [{ source: 'x', target: 'y' }];
+    expect(linkExists(links, 'y', 'x')).toBe(true);
+  });
+
+  it('does not match partially-matching pairs', () => {
+    const links = [{ source: 'a', target: 'b' }];
+    expect(linkExists(links, 'a', 'z')).toBe(false);
+    expect(linkExists(links, 'z', 'b')).toBe(false);
+  });
 });
