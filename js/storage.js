@@ -3,6 +3,7 @@ import { state } from './state.js';
 import { parseNodeArray, extraLinksFromLegacyNodes, nodeKey, linkExists } from './helpers.js';
 import { buildGraph, rebuildLinks, getSimulation } from './graph.js';
 import { hidePanel } from './sidePanel.js';
+import { toCompact, normaliseShareData } from './compress.js';
 
 // ── Persist ───────────────────────────────────────────────────────────────────
 
@@ -229,49 +230,6 @@ async function decompressFromBase64(encoded) {
   writer.close();
   const buf = await new Response(stream.readable).arrayBuffer();
   return JSON.parse(new TextDecoder().decode(buf));
-}
-
-// ── Compact v4 serialisation ──────────────────────────────────────────────────
-// Nodes become [{n,t,l?,o?}] arrays; links become [[srcIdx,tgtIdx]] pairs.
-// Null/empty fields are omitted. Saves ~50-60% vs the v3 format.
-
-function toCompact(nodes, extraLinks) {
-  const idx = new Map(nodes.map((n, i) => [n.id, i]));
-  return {
-    v: 4,
-    n: nodes.map(n => {
-      const e = { n: n.name, t: n.type };
-      if (n.location) e.l = n.location;
-      if (n.note)     e.o = n.note;
-      return e;
-    }),
-    l: extraLinks
-      .map(e => [idx.get(e.source), idx.get(e.target)])
-      .filter(([a, b]) => a !== undefined && b !== undefined)
-  };
-}
-
-function fromCompact(data) {
-  const nodes = (data.n || []).map((e, i) => ({
-    id:       i === 0 ? 'me' : e.n.toLowerCase().replace(/\s+/g, '_') + '_' + i,
-    name:     e.n,
-    type:     e.t,
-    location: e.l || null,
-    note:     e.o || ''
-  }));
-  const extraLinks = (data.l || [])
-    .map(([a, b]) => ({ source: nodes[a]?.id, target: nodes[b]?.id }))
-    .filter(l => l.source && l.target);
-  return { nodes, extraLinks };
-}
-
-// Handles both v4 (compact) and legacy v3 formats
-function normaliseShareData(raw) {
-  if (raw.v === 4) return fromCompact(raw);
-  return {
-    nodes:      raw.nodes      || [],
-    extraLinks: raw.extraLinks || []
-  };
 }
 
 export async function generateShareURL() {
