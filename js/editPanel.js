@@ -23,6 +23,8 @@ export function openEdit(id) {
   document.getElementById('edit-name').value         = d.name;
   document.getElementById('edit-location').value     = d.location || '';
   document.getElementById('edit-note').value         = d.note     || '';
+  document.getElementById('edit-std-date-text').value = d.stdTestedDate || '';
+  document.getElementById('edit-std-date').value      = d.stdTestedDate || '';
 
   editDropdown.select(d.type || 'other');
   const dd = document.getElementById('edit-type-dropdown');
@@ -51,6 +53,7 @@ export function saveEdit() {
   if (d.id !== 'me') d.type = editDropdown.getValue() || d.type;
   d.location = document.getElementById('edit-location').value.trim() || null;
   d.note     = document.getElementById('edit-note').value.trim()     || '';
+  d.stdTestedDate = document.getElementById('edit-std-date-text').value.trim() || null;
 
   dom.spEdit.style.display = 'none';
   dom.spView.style.display = 'block';
@@ -66,6 +69,14 @@ export function saveEdit() {
   const updated = state.nodes.find(n => n.id === id);
   if (updated) showPanel({ stopPropagation: () => {} }, updated);
 }
+
+// Calendar icon opens the native date picker; selection syncs to the text input
+document.getElementById('std-date-icon').addEventListener('click', () => {
+  document.getElementById('edit-std-date').showPicker();
+});
+document.getElementById('edit-std-date').addEventListener('change', e => {
+  document.getElementById('edit-std-date-text').value = e.target.value;
+});
 
 // Ctrl+Enter on note field saves; plain Enter inserts newline
 document.getElementById('edit-note').addEventListener('keydown', e => {

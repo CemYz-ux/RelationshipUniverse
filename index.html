@@ -130,6 +130,16 @@
         <label class="edit-label">Note</label>
         <textarea class="edit-input" id="edit-note" maxlength="200" rows="3"></textarea>
       </div>
+      <div class="edit-field" id="edit-std-field">
+        <label class="edit-label">Last STD tested</label>
+        <div class="cdp-input-wrap">
+          <input class="edit-input cdp-text-input" id="edit-std-date-text" type="text" placeholder="YYYY-MM-DD" maxlength="10" />
+          <input type="date" id="edit-std-date" tabindex="-1" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" />
+          <button type="button" class="cdp-icon-btn" id="std-date-icon" title="Open calendar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </button>
+        </div>
+      </div>
       <div class="edit-actions">
         <button class="btn-cancel-edit" onclick="cancelEdit()">Cancel</button>
         <button class="btn-save" onclick="saveEdit()">Save</button>

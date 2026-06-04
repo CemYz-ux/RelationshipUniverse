@@ -22,6 +22,13 @@ export const TYPE_EMOJIS = {
   me:      '✿'
 };
 
+export const STD_STATUS = {
+  recent:  { color: '#4ade80', label: 'Tested recently (< 3 months)' },
+  fair:    { color: '#fbbf24', label: 'Tested fairly recently (3–6 months)' },
+  old:     { color: '#f87171', label: 'Overdue (> 6 months)' },
+  unknown: { color: null,      label: 'STD status unknown' }
+};
+
 export const TYPE_SIZES = {
   partner: 44,
   friend:  40,

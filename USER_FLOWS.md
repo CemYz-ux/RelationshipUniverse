@@ -252,6 +252,59 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
+## 17. Record a person's last STD test date
+
+**Goal:** Log when a person was last tested so their status is visible on the graph.
+
+**Steps:**
+1. Click a person's node → **✎** → **✎ Edit [Name]**.
+2. Scroll to the **Last STD tested** field.
+3. Either:
+   - Type a date directly in `YYYY-MM-DD` format
+   - Click the calendar icon on the right to open the system date picker
+4. Click **Save**.
+
+**Expected outcome:**
+- A coloured ring appears around the node on the graph:
+  - 🟢 Green — tested within the last 3 months
+  - 🟡 Amber — tested 3–6 months ago
+  - 🔴 Red — tested more than 6 months ago
+- The details panel shows "STD tested: [status] · [date]" in the corresponding colour.
+- The date is saved to localStorage and persists across reloads.
+
+---
+
+## 18. Clear a person's STD test date
+
+**Goal:** Remove a recorded test date (e.g. if it was entered incorrectly).
+
+**Steps:**
+1. Click the person's node → **✎** → **✎ Edit [Name]**.
+2. Clear the **Last STD tested** input field.
+3. Click **Save**.
+
+**Expected outcome:**
+- The coloured ring disappears from the node.
+- The details panel no longer shows an STD tested row.
+
+---
+
+## 19. Read STD status at a glance
+
+**Goal:** Quickly assess the tested status of everyone in the graph without opening panels.
+
+**Steps:**
+1. Look at the graph — nodes with a solid coloured ring between the fill circle and the dashed outer ring have a recorded test date.
+
+**Expected outcome:**
+- Green rings indicate recently tested (< 3 months) — within the safe window.
+- Amber rings indicate it has been 3–6 months — due for retesting.
+- Red rings indicate it has been over 6 months — overdue by any standard.
+- Nodes with no ring have no date recorded (unknown).
+- The **You** node never shows a ring.
+
+---
+
 ## Edge cases
 
 | Scenario | Expected behaviour |
@@ -264,3 +317,7 @@ Each flow describes the steps a user takes and the expected outcome.
 | Camera permission denied | Status message shown; URL paste still works |
 | Clear all | Confirm dialog; on confirm all nodes except You are removed |
 | Share URL too long for messaging app | URL still works in browser; use Backup JSON for large graphs |
+| Set STD date to today | Green ring (< 3 months) |
+| Set STD date to an invalid string | Treated as unknown; no ring shown |
+| Edit a node without touching the STD date field | Existing date is preserved |
+| STD date crosses a threshold boundary over time | Ring colour updates automatically on next page load |

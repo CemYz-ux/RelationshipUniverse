@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   nodeKey,
   linkExists,
@@ -7,7 +7,9 @@ import {
   getColor,
   getSize,
   capitalize,
+  getStdStatus,
 } from '../../js/helpers.js';
+import { STD_STATUS } from '../../js/constants.js';
 
 // ── nodeKey ───────────────────────────────────────────────────────────────────
 
@@ -204,11 +206,10 @@ describe('parseNodeArray — additional edge cases', () => {
     expect(meNodes).toHaveLength(1);
   });
 
-  it('does not modify extra fields not in the schema', () => {
+  it('does not carry through fields outside the schema', () => {
     const result = parseNodeArray([{ id: 'me' }, { id: 'a', name: 'A', type: 'friend', x: 99 }]);
     const a = result.find(n => n.id === 'a');
-    // Only the five schema fields should be present — x is not carried through
-    expect(Object.keys(a).sort()).toEqual(['id', 'location', 'name', 'note', 'type'].sort());
+    expect(Object.keys(a).sort()).toEqual(['id', 'location', 'name', 'note', 'stdTestedDate', 'type'].sort());
   });
 });
 
@@ -240,5 +241,69 @@ describe('linkExists — additional edge cases', () => {
     const links = [{ source: 'a', target: 'b' }];
     expect(linkExists(links, 'a', 'z')).toBe(false);
     expect(linkExists(links, 'z', 'b')).toBe(false);
+  });
+});
+
+// ── getStdStatus ──────────────────────────────────────────────────────────────
+
+describe('getStdStatus', () => {
+  const NOW = new Date('2026-06-04T12:00:00Z');
+
+  beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(NOW); });
+  afterEach(() => vi.useRealTimers());
+
+  it('returns unknown for null', () => {
+    expect(getStdStatus(null)).toBe(STD_STATUS.unknown);
+  });
+
+  it('returns unknown for undefined', () => {
+    expect(getStdStatus(undefined)).toBe(STD_STATUS.unknown);
+  });
+
+  it('returns unknown for an empty string', () => {
+    expect(getStdStatus('')).toBe(STD_STATUS.unknown);
+  });
+
+  it('returns unknown for an invalid date string', () => {
+    expect(getStdStatus('not-a-date')).toBe(STD_STATUS.unknown);
+  });
+
+  it('returns recent for a date 1 month ago (< 3 months)', () => {
+    expect(getStdStatus('2026-05-04')).toBe(STD_STATUS.recent);
+  });
+
+  it('returns recent for a date 2.5 months ago (well inside 3-month window)', () => {
+    expect(getStdStatus('2026-03-18')).toBe(STD_STATUS.recent);
+  });
+
+  it('returns fair for a date ~4 months ago (between 3 and 6 months)', () => {
+    expect(getStdStatus('2026-02-04')).toBe(STD_STATUS.fair);
+  });
+
+  it('returns fair for a date just under 6 months ago', () => {
+    expect(getStdStatus('2025-12-15')).toBe(STD_STATUS.fair);
+  });
+
+  it('returns old for a date ~6.5 months ago (past 6-month cutoff)', () => {
+    expect(getStdStatus('2025-11-19')).toBe(STD_STATUS.old);
+  });
+
+  it('returns old for a date 1 year ago', () => {
+    expect(getStdStatus('2025-06-04')).toBe(STD_STATUS.old);
+  });
+
+  it('returns old for a date several years ago', () => {
+    expect(getStdStatus('2020-01-01')).toBe(STD_STATUS.old);
+  });
+
+  it('returns recent for today', () => {
+    expect(getStdStatus('2026-06-04')).toBe(STD_STATUS.recent);
+  });
+
+  it('returned object has the expected color and label shape', () => {
+    const result = getStdStatus('2026-05-01');
+    expect(result).toHaveProperty('color');
+    expect(result).toHaveProperty('label');
+    expect(typeof result.label).toBe('string');
   });
 });

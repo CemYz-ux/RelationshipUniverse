@@ -1,5 +1,5 @@
 import { state, dom } from './state.js';
-import { getColor, capitalize } from './helpers.js';
+import { getColor, capitalize, getStdStatus } from './helpers.js';
 
 export function showPanel(e, d) {
   if (state.linkPickMode) return;
@@ -32,11 +32,17 @@ export function showPanel(e, d) {
   }
 
   const isMe = d.id === 'me';
+  const std     = getStdStatus(d.stdTestedDate);
+  const stdHTML = (d.stdTestedDate && std.color) ? `<div class="tt-row">STD tested:
+    <span style="color:${std.color}">${std.label}</span>
+    <span style="color:#666;font-size:10px;margin-left:4px">${d.stdTestedDate}</span>
+  </div>` : '';
   dom.spView.innerHTML = `
     <div class="tt-name" style="color:${col}">${d.name}</div>
     <div class="tt-row">Type: <span>${capitalize(d.type)}</span></div>
     ${d.location ? `<div class="tt-row">Location: <span>${d.location}</span></div>` : ''}
     ${d.note     ? `<div class="tt-row">Note: <span>${d.note}</span></div>`         : ''}
+    ${stdHTML}
     ${connHTML}
     <div class="tt-actions">
       <button class="btn-tt btn-tt-neutral" onclick="openEdit('${d.id}')">✎ Edit ${isMe ? 'your info' : d.name}</button>

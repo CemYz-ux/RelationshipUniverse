@@ -1,5 +1,5 @@
 import { state, dom } from './state.js';
-import { getColor, getSize } from './helpers.js';
+import { getColor, getSize, getStdStatus } from './helpers.js';
 import { TYPE_EMOJIS } from './constants.js';
 
 // ── Dimensions ────────────────────────────────────────────────────────────────
@@ -86,6 +86,15 @@ export function buildGraph() {
 
     sel.append('circle').attr('class', 'node-ring').attr('r', r + 9)
       .style('stroke', col).style('stroke-dasharray', '3 5').style('opacity', 0.35);
+
+    const std = getStdStatus(d.stdTestedDate);
+    if (std.color) {
+      sel.append('circle').attr('class', 'node-std-ring').attr('r', r + 4)
+        .style('fill', 'none')
+        .style('stroke', std.color)
+        .style('stroke-width', 2.5)
+        .style('opacity', 0.85);
+    }
 
     sel.append('circle').attr('class', 'node-bg').attr('r', r)
       .style('fill', d.type === 'me' ? 'url(#grad-me)' : col + '18')

@@ -29,7 +29,7 @@ Click a node → **⇌** → click any other node. Connections are removable via
 
 | Button | Action |
 |--------|--------|
-| **✎ Edit** | Update name, type, location, note |
+| **✎ Edit** | Update name, type, location, note, and STD test date |
 | **Remove** | Delete node and all its connections |
 | **↑ Import via link or QR** | Open the import modal (see below) |
 | **⋯ More** | Import this person's network from a JSON file |
@@ -75,6 +75,7 @@ Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automaticall
 - **Click-to-select** — clicking a node sets it as the add target
 - **Node bubble** — **⇌** (link existing) and **✎** (details) on tap
 - **Peer connections** — link any two nodes; symmetric and removable
+- **STD test tracking** — record each person's last tested date; a colour-coded ring on the node shows their status at a glance
 - **Share via URL** — compressed base64 share links
 - **QR code share** — show your graph as a QR code for in-person sharing
 - **QR code scan** — camera-based import in the import modal
@@ -82,6 +83,23 @@ Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automaticall
 - **Export filename** — `<Name>-<Location>-Network.json`
 - **Mobile-friendly** — responsive, safe-area aware
 - **Persisted locally** — auto-saved in `localStorage`
+
+## STD test status
+
+Each person's node displays a solid colour ring (between the fill circle and the dashed outer ring) indicating when they were last tested:
+
+| Ring colour | Meaning | Threshold |
+|-------------|---------|-----------|
+| 🟢 Green | Tested recently | Within the last 3 months |
+| 🟡 Amber | Tested fairly recently | 3 – 6 months ago |
+| 🔴 Red | Overdue | More than 6 months ago |
+| *(no ring)* | Unknown | No date recorded |
+
+Thresholds follow sexual health guidelines for sexually active people with multiple partners (quarterly testing recommended). The **You** node never shows a ring.
+
+The date is set in the edit panel under **Last STD tested** — type it manually (`YYYY-MM-DD`) or click the calendar icon to use the system date picker.
+
+---
 
 ## Relationship types
 
@@ -123,3 +141,5 @@ Push to a public repo → **Settings → Pages** → source: root of `main` bran
 - [jsQR](https://github.com/cozmo/jsQR) — QR code scanning
 - Plain HTML / CSS / JS — no framework, no build step
 - ES modules — `js/` (14 modules) and `css/` (7 files)
+- [Vitest](https://vitest.dev/) — unit tests (`tests/unit/`)
+- [Playwright](https://playwright.dev/) — end-to-end tests (`tests/e2e/`)

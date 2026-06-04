@@ -9,8 +9,8 @@ import { toCompact, normaliseShareData } from './compress.js';
 
 export function saveToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    nodes: state.nodes.map(({ id, name, type, location, note }) =>
-      ({ id, name, type, location: location || null, note: note || '' })
+    nodes: state.nodes.map(({ id, name, type, location, note, stdTestedDate }) =>
+      ({ id, name, type, location: location || null, note: note || '', stdTestedDate: stdTestedDate || null })
     ),
     extraLinks: state.extraLinks
   }));
@@ -44,11 +44,12 @@ export function exportJSON() {
     version:  3,
     exported: new Date().toISOString(),
     nodes: state.nodes.map(n => ({
-      id:       n.id,
-      name:     n.name,
-      type:     n.type,
-      location: n.location || null,
-      note:     n.note     || ''
+      id:            n.id,
+      name:          n.name,
+      type:          n.type,
+      location:      n.location      || null,
+      note:          n.note          || '',
+      stdTestedDate: n.stdTestedDate || null
     })),
     extraLinks: state.extraLinks
   };
