@@ -305,6 +305,67 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
+## 20. Launch the tutorial
+
+**Goal:** Get a guided walkthrough of all core features without reading documentation.
+
+**Steps:**
+1. Click the **?** button in the top-right corner of the header (next to the GitHub icon).
+
+**Expected outcome:**
+- A dim overlay appears over the app.
+- A floating card appears at step 1 of 8 ("The Universe Awaits") with a Next → button.
+- The tutorial can be navigated forward with **Next →** and backward with **← Back**.
+- A row of 8 progress pips at the bottom of the card fills in as steps are completed.
+- The **✕** button in the card header closes the tutorial at any time.
+
+---
+
+## 21. Navigate the tutorial
+
+**Goal:** Step through all 8 stages and see each feature highlighted.
+
+**Steps:**
+1. Click **?** to open the tutorial.
+2. Click **Next →** to advance through steps.
+3. Optionally click **← Back** to revisit a previous step.
+4. On step 8 ("The Adventure Begins"), the Next button reads **Finish** — click it to close.
+
+**Steps and their highlighted elements:**
+
+| Step | Title | Highlighted element |
+|------|-------|---------------------|
+| 1 | The Universe Awaits | *(none — intro card centred)* |
+| 2 | The Center of Your World | You node (SVG glow) |
+| 3 | Add Your People | Add-person panel (bottom bar) |
+| 4 | Forge Connections | ⇌ link button (node bubble) |
+| 5 | The Language of Colour | Legend (top-left) |
+| 6 | Track Your Health | Side panel |
+| 7 | Share Your Universe | Top bar (Share / QR / Clear) |
+| 8 | The Adventure Begins | *(none — outro card centred)* |
+
+**Expected outcome:**
+- Each step focuses on the relevant UI element with a purple glowing highlight.
+- The app remains fully interactive — nodes, inputs, and buttons all work while the tutorial is open.
+- On Finish (or ✕), the overlay and card disappear and all highlights are cleared.
+
+---
+
+## 22. Close and reopen the tutorial
+
+**Goal:** Dismiss the tutorial mid-flow and relaunch it from the beginning.
+
+**Steps:**
+1. Click **?** → advance to any step.
+2. Click **✕** to close.
+3. Click **?** again.
+
+**Expected outcome:**
+- Closing clears all highlights and removes the dim overlay immediately.
+- Reopening restarts from step 1, regardless of where the previous session ended.
+
+---
+
 ## Edge cases
 
 | Scenario | Expected behaviour |
@@ -321,3 +382,7 @@ Each flow describes the steps a user takes and the expected outcome.
 | Set STD date to an invalid string | Treated as unknown; no ring shown |
 | Edit a node without touching the STD date field | Existing date is preserved |
 | STD date crosses a threshold boundary over time | Ring colour updates automatically on next page load |
+| Click **?** while tutorial is already open | Tutorial is already visible; no duplicate card created |
+| Tutorial step targets an element not yet in the DOM | Highlight is silently skipped; card still appears |
+| Close tutorial on last step via ✕ instead of Finish | Same result — overlay removed, highlights cleared |
+| Interact with graph while tutorial is open | App remains fully interactive; tutorial card stays visible |

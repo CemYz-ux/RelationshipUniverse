@@ -73,6 +73,7 @@ export function buildGraph() {
     .data(state.nodes, d => d.id)
     .join('g')
     .attr('class', 'node-group')
+    .attr('data-node-id', d => d.id)
     .call(d3.drag()
       .on('start', dragStart)
       .on('drag',  dragged)

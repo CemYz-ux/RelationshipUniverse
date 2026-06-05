@@ -8,6 +8,7 @@ import { addPerson, startConnectMode, cancelConnectMode, addDropdown } from './a
 import { removePerson, clearAll, createExtraLink, removeExtraLink } from './actions.js';
 import { startLinkPickMode, cancelLinkPickMode, handleLinkPickClick } from './linkMode.js';
 import { showBubble, hideBubble } from './bubble.js';
+import './tutorial.js';
 
 // ── Node click handler ────────────────────────────────────────────────────────
 
