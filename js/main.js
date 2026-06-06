@@ -4,7 +4,7 @@ import { showQRCode, hideQRCode, showImportModal, hideImportModal, importFromURL
 import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback } from './graph.js';
 import { showPanel, hidePanel } from './sidePanel.js';
 import { openEdit, cancelEdit, saveEdit, editDropdown } from './editPanel.js';
-import { addPerson, startConnectMode, cancelConnectMode, addDropdown } from './addPanel.js';
+import { addPerson, startConnectMode, cancelConnectMode, clearAddPanel, addDropdown } from './addPanel.js';
 import { removePerson, clearAll, createExtraLink, removeExtraLink } from './actions.js';
 import { startLinkPickMode, cancelLinkPickMode, handleLinkPickClick } from './linkMode.js';
 import { startMergePickMode, cancelMergePickMode, handleMergePickClick } from './mergeMode.js';
@@ -55,7 +55,7 @@ window.addEventListener('resize', () => {
 
 Object.assign(window, {
   openEdit, cancelEdit, saveEdit,
-  addPerson, cancelConnectMode,
+  addPerson, cancelConnectMode, clearAddPanel,
   startConnectMode, startLinkPickMode, cancelLinkPickMode,
   removePerson, clearAll,
   cancelMergePickMode,

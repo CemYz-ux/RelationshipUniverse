@@ -33,8 +33,7 @@ export function addPerson() {
       getSimulation().alpha(0.3).restart();
       saveToStorage();
     }
-    document.getElementById('name-input').value     = '';
-    document.getElementById('location-input').value = '';
+    clearAddPanel();
     cancelConnectMode();
     return;
   }
@@ -54,8 +53,7 @@ export function addPerson() {
   });
   state.extraLinks.push({ source: fromId, target: id });
 
-  document.getElementById('name-input').value     = '';
-  document.getElementById('location-input').value = '';
+  clearAddPanel();
   cancelConnectMode();
   rebuildLinks();
   buildGraph();
@@ -72,8 +70,12 @@ export function startConnectMode(nodeId, nodeName) {
 export function cancelConnectMode() {
   state.connectMode = null;
   document.getElementById('connect-to-label').textContent = '→ You:';
-  document.getElementById('name-input').value             = '';
-  document.getElementById('location-input').value         = '';
+}
+
+export function clearAddPanel() {
+  document.getElementById('name-input').value     = '';
+  document.getElementById('location-input').value = '';
+  addDropdown.select('partner');
 }
 
 // Enter key on inputs
