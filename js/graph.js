@@ -26,7 +26,7 @@ rg.append('stop').attr('offset', '100%').attr('stop-color', '#fff').attr('stop-o
 export const g    = svg.append('g');
 export const zoom = d3.zoom()
   .scaleExtent([0.3, 3])
-  .on('zoom', e => g.attr('transform', e.transform));
+  .on('zoom', e => { g.attr('transform', e.transform); _onZoom(e); });
 svg.call(zoom);
 
 // ── Simulation ────────────────────────────────────────────────────────────────
@@ -40,9 +40,11 @@ let linkSel, nodeSel;
 
 let _onNodeClick  = () => {};
 let _onDragStart  = () => {};
+let _onZoom       = () => {};
 
 export function setNodeClickHandler(fn) { _onNodeClick = fn; }
 export function setDragStartCallback(fn) { _onDragStart = fn; }
+export function setZoomCallback(fn) { _onZoom = fn; }
 
 // ── Rebuild links array from extraLinks ───────────────────────────────────────
 

@@ -1,7 +1,7 @@
 import { state, dom } from './state.js';
 import { loadFromStorage, saveToStorage, exportJSON, importJSON, importNetworkJSON, triggerNetworkImport, shareAsURL, checkShareURL, importNetworkFromURL } from './storage.js';
 import { showQRCode, hideQRCode, showImportModal, hideImportModal, importFromURLInput } from './qr.js';
-import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback } from './graph.js';
+import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback, setZoomCallback } from './graph.js';
 import { showPanel, hidePanel } from './sidePanel.js';
 import { openEdit, cancelEdit, saveEdit, editDropdown } from './editPanel.js';
 import { addPerson, startConnectMode, cancelConnectMode, clearAddPanel, addDropdown } from './addPanel.js';
@@ -30,6 +30,12 @@ setNodeClickHandler((e, d) => {
 setDragStartCallback(() => {
   hideBubble();
   cancelConnectMode();
+});
+
+setZoomCallback(e => {
+  // Only hide on genuine user gestures (scroll/pinch/pan), not programmatic zooms
+  // triggered by viewport resize (e.g. mobile keyboard opening).
+  if (e.sourceEvent) hideBubble();
 });
 
 // ── SVG background click ──────────────────────────────────────────────────────

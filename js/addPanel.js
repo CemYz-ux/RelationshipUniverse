@@ -64,7 +64,11 @@ export function addPerson() {
 export function startConnectMode(nodeId, nodeName) {
   state.connectMode = nodeId;
   document.getElementById('connect-to-label').textContent = `→ ${nodeName}:`;
-  document.getElementById('name-input').focus();
+  // Only auto-focus on pointer devices — on touch/mobile this opens the keyboard
+  // immediately, which pushes the graph and disorients the user.
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.getElementById('name-input').focus();
+  }
 }
 
 export function cancelConnectMode() {
