@@ -1,7 +1,7 @@
 import { state, dom } from './state.js';
 import { loadFromStorage, saveToStorage, exportJSON, importJSON, importNetworkJSON, triggerNetworkImport, shareAsURL, checkShareURL, importNetworkFromURL } from './storage.js';
 import { showQRCode, hideQRCode, showImportModal, hideImportModal, importFromURLInput } from './qr.js';
-import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback, setZoomCallback } from './graph.js';
+import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback, setZoomCallback, untangleNodes } from './graph.js';
 import { showPanel, hidePanel } from './sidePanel.js';
 import { openEdit, cancelEdit, saveEdit, editDropdown } from './editPanel.js';
 import { addPerson, startConnectMode, cancelConnectMode, clearAddPanel, addDropdown } from './addPanel.js';
@@ -66,7 +66,7 @@ Object.assign(window, {
   removePerson, clearAll,
   cancelMergePickMode,
   removeExtraLink, createExtraLink,
-  exportJSON, triggerNetworkImport, shareAsURL,
+  exportJSON, triggerNetworkImport, shareAsURL, untangleNodes,
   showQRCode, hideQRCode,
   showImportModal, hideImportModal, importFromURLInput,
   importFromURL: (nodeId) => {

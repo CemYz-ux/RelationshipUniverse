@@ -55,6 +55,7 @@ The imported network merges anchored to the node you opened the panel from, with
 
 | Button | Action |
 |--------|--------|
+| **⊹ Untangle** | Snap all nodes into a clean radial layout — you at the centre, connected people placed side by side |
 | **⤴ Share** | Compress graph into a URL and copy to clipboard |
 | **⊡ QR** | Show your graph as a scannable QR code |
 | **✕ Clear** | Remove all nodes and connections (with confirmation) |
@@ -62,7 +63,7 @@ The imported network merges anchored to the node you opened the panel from, with
 
 ### 9. Tutorial
 
-Click the **?** button in the top-right corner (next to the GitHub icon) to launch the interactive tutorial. It walks through all core features as an 8-step hero's journey — each step highlights the relevant UI element and explains what it does. You can navigate with **Next →** / **← Back**, or close at any time with **✕**.
+Click the **?** button in the top-right corner (next to the GitHub icon) to launch the interactive tutorial. It walks through all core features as a 10-step hero's journey — each step highlights the relevant UI element and explains what it does. You can navigate with **Next →** / **← Back**, or close at any time with **✕**.
 
 ### 10. Share & import flows
 
@@ -80,6 +81,8 @@ Click the **?** button in the top-right corner (next to the GitHub icon) to laun
 
 Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automatically in `localStorage`.
 
+Hit **⊹ Untangle** any time to reset to a clean radial layout — useful when the graph gets crowded after many additions. Nodes are free to drag again immediately after.
+
 ---
 
 ## Features
@@ -94,7 +97,8 @@ Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automaticall
 - **QR code scan** — camera-based import in the import modal
 - **Smart merge** — deduplicates by name + location (including yourself)
 - **Export filename** — `<Name>-<Location>-Network.json`
-- **Interactive tutorial** — 8-step hero's journey triggered by **?** in the top-right; highlights each UI element in sequence, closable at any time
+- **Untangle layout** — one-click radial layout that places you at the centre and groups connected people side by side, with no link lines crossing through the centre node
+- **Interactive tutorial** — 10-step hero's journey triggered by **?** in the top-right; highlights each UI element in sequence, closable at any time
 - **Mobile-friendly** — responsive, safe-area aware
 - **Persisted locally** — auto-saved in `localStorage`
 
@@ -154,6 +158,6 @@ Push to a public repo → **Settings → Pages** → source: root of `main` bran
 - [qrcodejs](https://github.com/davidshimjs/qrcodejs) — QR code generation
 - [jsQR](https://github.com/cozmo/jsQR) — QR code scanning
 - Plain HTML / CSS / JS — no framework, no build step
-- ES modules — `js/` (16 modules) and `css/` (8 files)
+- ES modules — `js/` (17 modules) and `css/` (8 files)
 - [Vitest](https://vitest.dev/) — unit tests (`tests/unit/`)
 - [Playwright](https://playwright.dev/) — end-to-end tests (`tests/e2e/`)

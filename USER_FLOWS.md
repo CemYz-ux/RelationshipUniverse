@@ -132,7 +132,28 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 9. Drag and zoom
+## 9. Untangle the graph
+
+**Goal:** Reset a crowded or tangled graph into a clean, readable radial layout with one click.
+
+**Steps:**
+1. Click **⊹ Untangle** in the top bar.
+
+**Expected outcome:**
+- You node snaps to the canvas centre and stays fixed there.
+- Every directly connected node is placed on a ring 200 px from the centre, spaced evenly.
+- Connected siblings (nodes that also have a link between them) are placed angularly adjacent so their connection line does not cross through You.
+- Second-degree nodes (connected to a neighbour but not directly to You) are placed on an outer ring, grouped within their parent's angular wedge.
+- Any nodes with no path to You are placed in an outermost ring.
+- After 800 ms, all positions are released and nodes can be dragged freely again.
+
+**Constraints:**
+- The layout is not saved — it sets starting positions for the physics simulation, which then settles naturally.
+- Clicking Untangle multiple times is safe and produces a stable result each time.
+
+---
+
+## 10. Drag and zoom
 
 **Goal:** Rearrange the graph layout manually.
 
@@ -147,7 +168,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 10. Backup graph as JSON
+## 11. Backup graph as JSON
 
 **Goal:** Save the graph to a file for archiving or large-graph sharing.
 
@@ -160,7 +181,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 11. Restore graph from JSON
+## 12. Restore graph from JSON
 
 **Goal:** Load a previously backed-up graph, replacing the current one.
 
@@ -174,7 +195,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 12. Share graph via URL
+## 13. Share graph via URL
 
 **Goal:** Share the entire graph as a link without a file.
 
@@ -190,7 +211,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 13. Show my QR code
+## 14. Show my QR code
 
 **Goal:** Display your graph as a QR code for in-person sharing.
 
@@ -199,12 +220,12 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Expected outcome:**
 - A modal opens showing a QR code of your compressed share URL.
-- The other person scans it using the import modal on their device (flow 16).
+- The other person scans it using the import modal on their device (flow 17).
 - Click outside or **✕ Close** to dismiss.
 
 ---
 
-## 14. Import graph from share URL (replace)
+## 15. Import graph from share URL (replace)
 
 **Goal:** Open someone's shared graph link and load it.
 
@@ -219,7 +240,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 15. Import a person's network — merge via JSON
+## 16. Import a person's network — merge via JSON
 
 **Goal:** Merge another person's graph into your own, anchored to their node.
 
@@ -238,7 +259,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 16. Import a person's network — merge via URL or QR
+## 17. Import a person's network — merge via URL or QR
 
 **Goal:** Merge someone's network using their share URL or QR code.
 
@@ -253,13 +274,13 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Expected outcome:**
 - The import modal closes.
-- Same deduplication and merge behaviour as flow 14.
+- Same deduplication and merge behaviour as flow 15.
 - Camera stops automatically when a QR is detected or the modal is closed.
 - If the camera is unavailable, a message prompts the user to paste a URL instead.
 
 ---
 
-## 17. Persist across sessions
+## 18. Persist across sessions
 
 **Goal:** Verify the graph survives a page reload.
 
@@ -273,7 +294,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 18. Record a person's last STD test date
+## 19. Record a person's last STD test date
 
 **Goal:** Log when a person was last tested so their status is visible on the graph.
 
@@ -295,7 +316,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 19. Clear a person's STD test date
+## 20. Clear a person's STD test date
 
 **Goal:** Remove a recorded test date (e.g. if it was entered incorrectly).
 
@@ -310,7 +331,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 20. Read STD status at a glance
+## 21. Read STD status at a glance
 
 **Goal:** Quickly assess the tested status of everyone in the graph without opening panels.
 
@@ -326,7 +347,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 21. Launch the tutorial
+## 22. Launch the tutorial
 
 **Goal:** Get a guided walkthrough of all core features without reading documentation.
 
@@ -335,22 +356,22 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Expected outcome:**
 - A dim overlay appears over the app.
-- A floating card appears at step 1 of 9 ("The Universe Awaits") with a Next → button.
+- A floating card appears at step 1 of 10 ("The Universe Awaits") with a Next → button.
 - The tutorial can be navigated forward with **Next →** and backward with **← Back**.
-- A row of 9 progress pips at the bottom of the card fills in as steps are completed.
+- A row of 10 progress pips at the bottom of the card fills in as steps are completed.
 - The **✕** button in the card header closes the tutorial at any time.
 
 ---
 
-## 22. Navigate the tutorial
+## 23. Navigate the tutorial
 
-**Goal:** Step through all 8 stages and see each feature highlighted.
+**Goal:** Step through all 10 stages and see each feature highlighted.
 
 **Steps:**
 1. Click **?** to open the tutorial.
 2. Click **Next →** to advance through steps.
 3. Optionally click **← Back** to revisit a previous step.
-4. On step 9 ("The Adventure Begins"), the Next button reads **Finish** — click it to close.
+4. On step 10 ("The Adventure Begins"), the Next button reads **Finish** — click it to close.
 
 **Steps and their highlighted elements:**
 
@@ -363,8 +384,9 @@ Each flow describes the steps a user takes and the expected outcome.
 | 5 | Merge & Simplify | ⊕ merge button (node bubble) |
 | 6 | The Language of Colour | Legend (top-left) |
 | 7 | Track Your Health | Side panel |
-| 8 | Share Your Universe | Top bar (Share / QR / Clear) |
-| 9 | The Adventure Begins | *(none — outro card centred)* |
+| 8 | Untangle the Web | ⊹ Untangle button (top bar) |
+| 9 | Share Your Universe | Top bar (Share / QR / Clear) |
+| 10 | The Adventure Begins | *(none — outro card centred)* |
 
 **Expected outcome:**
 - Each step focuses on the relevant UI element with a purple glowing highlight.
@@ -373,7 +395,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 23. Close and reopen the tutorial
+## 24. Close and reopen the tutorial
 
 **Goal:** Dismiss the tutorial mid-flow and relaunch it from the beginning.
 
@@ -408,6 +430,10 @@ Each flow describes the steps a user takes and the expected outcome.
 | Set STD date to an invalid string | Treated as unknown; no ring shown |
 | Edit a node without touching the STD date field | Existing date is preserved |
 | STD date crosses a threshold boundary over time | Ring colour updates automatically on next page load |
+| Click **⊹ Untangle** with only the You node | No crash; You node stays at centre |
+| Click **⊹ Untangle** multiple times in a row | Stable; each press produces the same clean layout |
+| Untangle a graph with disconnected nodes | Disconnected nodes placed in an outer ring; connected nodes form the inner rings |
+| Drag a node after Untangle | Free drag works immediately (positions released after 800 ms) |
 | Click **?** while tutorial is already open | Tutorial is already visible; no duplicate card created |
 | Tutorial step targets an element not yet in the DOM | Highlight is silently skipped; card still appears |
 | Close tutorial on last step via ✕ instead of Finish | Same result — overlay removed, highlights cleared |

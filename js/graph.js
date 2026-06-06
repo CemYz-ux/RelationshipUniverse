@@ -1,6 +1,7 @@
 import { state, dom } from './state.js';
 import { getColor, getSize, getStdStatus } from './helpers.js';
 import { TYPE_EMOJIS } from './constants.js';
+import { buildAdjacency, buildSpanningTree, orderSiblings, computeRadialLayout } from './layout.js';
 
 // ── Dimensions ────────────────────────────────────────────────────────────────
 
@@ -151,3 +152,26 @@ function dragEnd(e, d) {
   if (!e.active) simulation.alphaTarget(0);
   if (d.id !== 'me') { d.fx = null; d.fy = null; }
 }
+
+// ── Untangle: radial tree layout (connected siblings placed adjacent) ──────────
+
+export function untangleNodes() {
+  if (!simulation || state.nodes.length === 0) return;
+
+  const cx = width / 2;
+  const cy = height / 2;
+  const positions = computeRadialLayout(state.nodes, state._links || [], cx, cy);
+
+  state.nodes.forEach(n => {
+    const pos = positions.get(n.id);
+    if (!pos) return;
+    n.fx = pos.x; n.fy = pos.y; n.x = pos.x; n.y = pos.y;
+  });
+
+  simulation.alpha(0.3).restart();
+  setTimeout(() => {
+    state.nodes.forEach(n => { if (n.id !== 'me') { n.fx = null; n.fy = null; } });
+    simulation.alpha(0.1).restart();
+  }, 800);
+}
+

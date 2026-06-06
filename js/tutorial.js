@@ -38,6 +38,11 @@ export const STEPS = [
     targetFn: () => document.getElementById('side-panel'),
   },
   {
+    title: 'Untangle the Web',
+    body: 'Nodes getting crowded? Hit <strong>⊹ Untangle</strong> to snap everything into a clean radial layout — connected people placed side by side, you at the centre.',
+    targetFn: () => document.querySelector('button[onclick="untangleNodes()"]'),
+  },
+  {
     title: 'Share Your Universe',
     body: 'Hit <strong>Share</strong> to copy a compressed link, or <strong>QR</strong> to generate a scannable code. Others can import your network and merge it with theirs.',
     targetFn: () => document.getElementById('io-bar'),
