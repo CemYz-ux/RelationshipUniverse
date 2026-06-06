@@ -67,7 +67,29 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 5. Remove a connection
+## 5. Merge two nodes
+
+**Goal:** Absorb one node into another, keeping the first node's info and migrating all connections.
+
+**Steps:**
+1. Click the node to keep (e.g. "Linda") → bubble → **⊕**.
+2. The side panel shows "Click a node to merge into Linda."
+3. Click the node to absorb (e.g. "Carl").
+
+**Expected outcome:**
+- Carl is removed from the graph.
+- All of Carl's connections are transferred to Linda.
+- Any connection that would become a duplicate or a self-link is silently dropped.
+- Linda's name, type, location, note, and STD date are unchanged.
+- Clicking the background instead cancels the operation.
+
+**Constraints:**
+- The **You** node can absorb other nodes (click **You** → **⊕** → click target).
+- The **You** node can never be absorbed — clicking it as the merge target is ignored.
+
+---
+
+## 6. Remove a connection
 
 **Goal:** Delete a connection without removing either node.
 
@@ -81,8 +103,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 6. Edit a node
-
+## 7. Edit a node
 **Goal:** Update a person's name, type, location, or note.
 
 **Steps:**
@@ -98,7 +119,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 7. Remove a node
+## 8. Remove a node
 
 **Goal:** Delete a person and all their connections.
 
@@ -111,7 +132,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 8. Drag and zoom
+## 9. Drag and zoom
 
 **Goal:** Rearrange the graph layout manually.
 
@@ -126,7 +147,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 9. Backup graph as JSON
+## 10. Backup graph as JSON
 
 **Goal:** Save the graph to a file for archiving or large-graph sharing.
 
@@ -139,7 +160,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 10. Restore graph from JSON
+## 11. Restore graph from JSON
 
 **Goal:** Load a previously backed-up graph, replacing the current one.
 
@@ -153,7 +174,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 11. Share graph via URL
+## 12. Share graph via URL
 
 **Goal:** Share the entire graph as a link without a file.
 
@@ -169,7 +190,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 12. Show my QR code
+## 13. Show my QR code
 
 **Goal:** Display your graph as a QR code for in-person sharing.
 
@@ -178,12 +199,12 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Expected outcome:**
 - A modal opens showing a QR code of your compressed share URL.
-- The other person scans it using the import modal on their device (flow 15).
+- The other person scans it using the import modal on their device (flow 16).
 - Click outside or **✕ Close** to dismiss.
 
 ---
 
-## 13. Import graph from share URL (replace)
+## 14. Import graph from share URL (replace)
 
 **Goal:** Open someone's shared graph link and load it.
 
@@ -198,7 +219,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 14. Import a person's network — merge via JSON
+## 15. Import a person's network — merge via JSON
 
 **Goal:** Merge another person's graph into your own, anchored to their node.
 
@@ -217,7 +238,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 15. Import a person's network — merge via URL or QR
+## 16. Import a person's network — merge via URL or QR
 
 **Goal:** Merge someone's network using their share URL or QR code.
 
@@ -238,7 +259,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 16. Persist across sessions
+## 17. Persist across sessions
 
 **Goal:** Verify the graph survives a page reload.
 
@@ -252,7 +273,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 17. Record a person's last STD test date
+## 18. Record a person's last STD test date
 
 **Goal:** Log when a person was last tested so their status is visible on the graph.
 
@@ -274,7 +295,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 18. Clear a person's STD test date
+## 19. Clear a person's STD test date
 
 **Goal:** Remove a recorded test date (e.g. if it was entered incorrectly).
 
@@ -289,7 +310,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 19. Read STD status at a glance
+## 20. Read STD status at a glance
 
 **Goal:** Quickly assess the tested status of everyone in the graph without opening panels.
 
@@ -305,7 +326,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 20. Launch the tutorial
+## 21. Launch the tutorial
 
 **Goal:** Get a guided walkthrough of all core features without reading documentation.
 
@@ -314,14 +335,14 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Expected outcome:**
 - A dim overlay appears over the app.
-- A floating card appears at step 1 of 8 ("The Universe Awaits") with a Next → button.
+- A floating card appears at step 1 of 9 ("The Universe Awaits") with a Next → button.
 - The tutorial can be navigated forward with **Next →** and backward with **← Back**.
-- A row of 8 progress pips at the bottom of the card fills in as steps are completed.
+- A row of 9 progress pips at the bottom of the card fills in as steps are completed.
 - The **✕** button in the card header closes the tutorial at any time.
 
 ---
 
-## 21. Navigate the tutorial
+## 22. Navigate the tutorial
 
 **Goal:** Step through all 8 stages and see each feature highlighted.
 
@@ -329,7 +350,7 @@ Each flow describes the steps a user takes and the expected outcome.
 1. Click **?** to open the tutorial.
 2. Click **Next →** to advance through steps.
 3. Optionally click **← Back** to revisit a previous step.
-4. On step 8 ("The Adventure Begins"), the Next button reads **Finish** — click it to close.
+4. On step 9 ("The Adventure Begins"), the Next button reads **Finish** — click it to close.
 
 **Steps and their highlighted elements:**
 
@@ -339,10 +360,11 @@ Each flow describes the steps a user takes and the expected outcome.
 | 2 | The Center of Your World | You node (SVG glow) |
 | 3 | Add Your People | Add-person panel (bottom bar) |
 | 4 | Forge Connections | ⇌ link button (node bubble) |
-| 5 | The Language of Colour | Legend (top-left) |
-| 6 | Track Your Health | Side panel |
-| 7 | Share Your Universe | Top bar (Share / QR / Clear) |
-| 8 | The Adventure Begins | *(none — outro card centred)* |
+| 5 | Merge & Simplify | ⊕ merge button (node bubble) |
+| 6 | The Language of Colour | Legend (top-left) |
+| 7 | Track Your Health | Side panel |
+| 8 | Share Your Universe | Top bar (Share / QR / Clear) |
+| 9 | The Adventure Begins | *(none — outro card centred)* |
 
 **Expected outcome:**
 - Each step focuses on the relevant UI element with a purple glowing highlight.
@@ -351,7 +373,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 22. Close and reopen the tutorial
+## 23. Close and reopen the tutorial
 
 **Goal:** Dismiss the tutorial mid-flow and relaunch it from the beginning.
 
@@ -372,6 +394,10 @@ Each flow describes the steps a user takes and the expected outcome.
 |----------|--------------------|
 | Add a node with no name | Nothing happens; add panel stays open |
 | Link a node to itself | Ignored; no self-loop created |
+| Merge a node into itself | Ignored; clicking the primary node during merge pick mode does nothing |
+| Click **You** as merge target | Ignored; You can never be absorbed |
+| Merged node had connections to primary | Self-links are silently dropped after redirect |
+| Merged node shared connections with primary | Duplicate links are deduplicated; only one connection kept |
 | Import a network where all nodes already exist | Alert: "Nothing new to import" |
 | Open a malformed or expired share URL | Silent failure; existing graph untouched |
 | Scan a QR code that is not a share URL | Ignored; scanner keeps scanning |

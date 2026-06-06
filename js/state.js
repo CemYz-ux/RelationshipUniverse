@@ -7,6 +7,7 @@ export const state = {
   // UI modes
   connectMode:          null,  // nodeId we're adding a child to
   linkPickMode:         null,  // nodeId we're linking from
+  mergePickMode:        null,  // nodeId we're merging FROM (primary — keeps info)
   selectedNodeId:       null,
   editingNodeId:        null,
   bubbleNodeId:         null,
@@ -23,5 +24,6 @@ export const dom = {
   container: document.getElementById('graph-container'),
   bubble:    document.getElementById('node-bubble'),
   nbLink:    document.getElementById('nb-link'),
+  nbMerge:   document.getElementById('nb-merge'),
   nbInfo:    document.getElementById('nb-info'),
 };

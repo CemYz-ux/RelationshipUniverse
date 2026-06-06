@@ -7,6 +7,7 @@ import { openEdit, cancelEdit, saveEdit, editDropdown } from './editPanel.js';
 import { addPerson, startConnectMode, cancelConnectMode, addDropdown } from './addPanel.js';
 import { removePerson, clearAll, createExtraLink, removeExtraLink } from './actions.js';
 import { startLinkPickMode, cancelLinkPickMode, handleLinkPickClick } from './linkMode.js';
+import { startMergePickMode, cancelMergePickMode, handleMergePickClick } from './mergeMode.js';
 import { showBubble, hideBubble } from './bubble.js';
 import './tutorial.js';
 
@@ -15,6 +16,10 @@ import './tutorial.js';
 setNodeClickHandler((e, d) => {
   if (state.linkPickMode) {
     if (d.id !== state.linkPickMode) handleLinkPickClick(d.id);
+    return;
+  }
+  if (state.mergePickMode) {
+    if (d.id !== state.mergePickMode) handleMergePickClick(d.id);
     return;
   }
   // Show bubble for edit/link/info AND activate connect mode for this node
@@ -30,7 +35,8 @@ setDragStartCallback(() => {
 // ── SVG background click ──────────────────────────────────────────────────────
 
 svg.on('click', () => {
-  if (state.linkPickMode) { cancelLinkPickMode(); return; }
+  if (state.linkPickMode)  { cancelLinkPickMode();  return; }
+  if (state.mergePickMode) { cancelMergePickMode(); return; }
   hideBubble();
   cancelConnectMode();
   hidePanel();
@@ -52,6 +58,7 @@ Object.assign(window, {
   addPerson, cancelConnectMode,
   startConnectMode, startLinkPickMode, cancelLinkPickMode,
   removePerson, clearAll,
+  cancelMergePickMode,
   removeExtraLink, createExtraLink,
   exportJSON, triggerNetworkImport, shareAsURL,
   showQRCode, hideQRCode,

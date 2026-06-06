@@ -16,6 +16,12 @@
   animation: pick-pulse 1.4s ease-in-out infinite;
 }
 
+#svg.merge-pick-active .node-group { cursor: crosshair; }
+#svg.merge-pick-active .node-group .node-ring {
+  opacity: 0.7 !important;
+  animation: pick-pulse 1.4s ease-in-out infinite;
+}
+
 @keyframes pick-pulse {
   0%, 100% { opacity: 0.4; }
   50%       { opacity: 0.9; }

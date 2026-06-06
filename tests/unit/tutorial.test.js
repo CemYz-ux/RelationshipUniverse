@@ -5,8 +5,8 @@ import { STEPS } from '../../js/tutorial.js';
 // ── STEPS data integrity ──────────────────────────────────────────────────────
 
 describe('STEPS array', () => {
-  it('has 8 steps', () => {
-    expect(STEPS).toHaveLength(8);
+  it('has 9 steps', () => {
+    expect(STEPS).toHaveLength(9);
   });
 
   it('every step has a non-empty title string', () => {
@@ -98,7 +98,7 @@ describe('startTutorial / closeTutorial', () => {
     const { startTutorial } = await import('../../js/tutorial.js');
     startTutorial();
     const card = document.getElementById('tutorial-card');
-    expect(card.innerHTML).toContain('Step 1 of 8');
+    expect(card.innerHTML).toContain('Step 1 of 9');
   });
 
   it('startTutorial renders the first step title', async () => {
@@ -146,7 +146,7 @@ describe('Next / Back navigation', () => {
     const { startTutorial } = await import('../../js/tutorial.js');
     startTutorial();
     document.querySelector('#tut-next-btn').click();
-    expect(document.getElementById('tutorial-card').innerHTML).toContain('Step 2 of 8');
+    expect(document.getElementById('tutorial-card').innerHTML).toContain('Step 2 of 9');
   });
 
   it('step 2 renders the correct title', async () => {
@@ -174,7 +174,7 @@ describe('Next / Back navigation', () => {
     startTutorial();
     document.querySelector('#tut-next-btn').click();
     document.querySelector('#tut-prev-btn').click();
-    expect(document.getElementById('tutorial-card').innerHTML).toContain('Step 1 of 8');
+    expect(document.getElementById('tutorial-card').innerHTML).toContain('Step 1 of 9');
   });
 
   it('Next button label is "Finish" on the last step', async () => {
@@ -207,11 +207,11 @@ describe('Progress pips', () => {
     document.body.innerHTML = '';
   });
 
-  it('renders 8 pips', async () => {
+  it('renders 9 pips', async () => {
     const { startTutorial } = await import('../../js/tutorial.js');
     startTutorial();
     const pips = document.querySelectorAll('.tut-pip');
-    expect(pips).toHaveLength(8);
+    expect(pips).toHaveLength(9);
   });
 
   it('first pip is done on step 1', async () => {

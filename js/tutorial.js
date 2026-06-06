@@ -23,6 +23,11 @@ export const STEPS = [
     targetFn: () => document.getElementById('nb-link'),
   },
   {
+    title: 'Merge & Simplify',
+    body: 'Click any node, then tap <strong>⊕</strong> to enter merge mode — then click another node to absorb it. Its connections all move across. The <strong>You</strong> node can absorb others but can never be removed.',
+    targetFn: () => document.getElementById('nb-merge'),
+  },
+  {
     title: 'The Language of Colour',
     body: 'Each hue tells a story: lavender for partners, pink for friends, teal for dating, and more. The colour shows on their node instantly.',
     targetFn: () => document.getElementById('legend'),

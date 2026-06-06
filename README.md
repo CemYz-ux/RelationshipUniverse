@@ -14,9 +14,10 @@ The add panel at the bottom always shows the current target (`→ You:` by defau
 
 ### 3. Select a node
 
-**Click any node** to select it as the add target. The add panel updates to `→ NodeName:`. A bubble appears with two actions:
+**Click any node** to select it as the add target. The add panel updates to `→ NodeName:`. A bubble appears with three actions:
 
 - **⇌** — link this node to another existing node
+- **⊕** — merge another node into this one
 - **✎** — open the details panel
 
 Clicking the background deselects and returns to `→ You:`.
@@ -25,7 +26,14 @@ Clicking the background deselects and returns to `→ You:`.
 
 Click a node → **⇌** → click any other node. Connections are removable via **✕** in the details panel.
 
-### 5. Details panel (✎)
+### 5. Merge nodes
+
+Click a node → **⊕** → click the node to absorb into it. The first node keeps all its info; the second node is removed and all its connections are migrated to the first.
+
+- You can merge any node into **You** (click **You** → **⊕** → click the other node)
+- You cannot merge **You** into another node — **You** can never be removed
+
+### 6. Details panel (✎)
 
 | Button | Action |
 |--------|--------|
@@ -34,7 +42,7 @@ Click a node → **⇌** → click any other node. Connections are removable via
 | **↑ Import via link or QR** | Open the import modal (see below) |
 | **⋯ More** | Import this person's network from a JSON file |
 
-### 6. Import modal
+### 7. Import modal
 
 Opened via **↑ Import via link or QR** in the details panel. Two ways to import:
 
@@ -43,7 +51,7 @@ Opened via **↑ Import via link or QR** in the details panel. Two ways to impor
 
 The imported network merges anchored to the node you opened the panel from, with full deduplication by name + location.
 
-### 7. Top bar
+### 8. Top bar
 
 | Button | Action |
 |--------|--------|
@@ -52,11 +60,11 @@ The imported network merges anchored to the node you opened the panel from, with
 | **✕ Clear** | Remove all nodes and connections (with confirmation) |
 | **⋯** | Backup (export JSON) · Restore (import JSON) |
 
-### 8. Tutorial
+### 9. Tutorial
 
 Click the **?** button in the top-right corner (next to the GitHub icon) to launch the interactive tutorial. It walks through all core features as an 8-step hero's journey — each step highlights the relevant UI element and explains what it does. You can navigate with **Next →** / **← Back**, or close at any time with **✕**.
 
-### 8. Share & import flows
+### 10. Share & import flows
 
 **Share your network:**
 - **⤴ Share** → copies URL to clipboard → paste anywhere
@@ -68,7 +76,7 @@ Click the **?** button in the top-right corner (next to the GitHub icon) to laun
 
 > **Note:** Share URLs work well for small-to-medium graphs. Very large graphs produce long URLs that may be truncated by some messaging apps. Use **⋯ → Backup JSON** for large graphs or permanent backups.
 
-### 9. Rearrange
+### 11. Rearrange
 
 Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automatically in `localStorage`.
 
@@ -77,8 +85,9 @@ Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automaticall
 ## Features
 
 - **Click-to-select** — clicking a node sets it as the add target
-- **Node bubble** — **⇌** (link existing) and **✎** (details) on tap
+- **Node bubble** — **⇌** (link existing), **⊕** (merge), and **✎** (details) on tap
 - **Peer connections** — link any two nodes; symmetric and removable
+- **Node merge** — absorb one node into another, migrating all connections; **You** can never be absorbed
 - **STD test tracking** — record each person's last tested date; a colour-coded ring on the node shows their status at a glance
 - **Share via URL** — compressed base64 share links
 - **QR code share** — show your graph as a QR code for in-person sharing
@@ -145,6 +154,6 @@ Push to a public repo → **Settings → Pages** → source: root of `main` bran
 - [qrcodejs](https://github.com/davidshimjs/qrcodejs) — QR code generation
 - [jsQR](https://github.com/cozmo/jsQR) — QR code scanning
 - Plain HTML / CSS / JS — no framework, no build step
-- ES modules — `js/` (15 modules) and `css/` (8 files)
+- ES modules — `js/` (16 modules) and `css/` (8 files)
 - [Vitest](https://vitest.dev/) — unit tests (`tests/unit/`)
 - [Playwright](https://playwright.dev/) — end-to-end tests (`tests/e2e/`)

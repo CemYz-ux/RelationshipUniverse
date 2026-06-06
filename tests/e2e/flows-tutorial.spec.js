@@ -25,7 +25,7 @@ test('Tutorial — clicking ? shows the dim overlay', async ({ page }) => {
 
 test('Tutorial — step 1 shows correct badge text', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
-  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 8');
+  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 9');
 });
 
 test('Tutorial — step 1 shows the welcome title', async ({ page }) => {
@@ -48,7 +48,7 @@ test('Tutorial — step 1 Next button reads "Next →"', async ({ page }) => {
 test('Tutorial — Next advances to step 2', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
   await page.locator('#tut-next-btn').click();
-  await expect(page.locator('#tutorial-card')).toContainText('Step 2 of 8');
+  await expect(page.locator('#tutorial-card')).toContainText('Step 2 of 9');
 });
 
 test('Tutorial — step 2 shows the correct title', async ({ page }) => {
@@ -69,7 +69,7 @@ test('Tutorial — Back returns from step 2 to step 1', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
   await page.locator('#tut-next-btn').click();
   await page.locator('#tut-prev-btn').click();
-  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 8');
+  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 9');
 });
 
 test('Tutorial — Back on step 2 removes the Back button again', async ({ page }) => {
@@ -81,9 +81,9 @@ test('Tutorial — Back on step 2 removes the Back button again', async ({ page 
 
 // ── Progress pips ─────────────────────────────────────────────────────────────
 
-test('Tutorial — 8 progress pips are rendered', async ({ page }) => {
+test('Tutorial — 9 progress pips are rendered', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
-  await expect(page.locator('.tut-pip')).toHaveCount(8);
+  await expect(page.locator('.tut-pip')).toHaveCount(9);
 });
 
 test('Tutorial — first pip is done on step 1', async ({ page }) => {
@@ -147,21 +147,29 @@ test('Tutorial — step 4 highlights the link button', async ({ page }) => {
   await expect(page.locator('#nb-link')).toHaveClass(/tutorial-highlight/);
 });
 
-test('Tutorial — step 5 highlights the legend', async ({ page }) => {
+test('Tutorial — step 5 highlights the merge button', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
   for (let i = 0; i < 4; i++) await page.locator('#tut-next-btn').click();
+  // #nb-merge is only visible when a node bubble is open; the tutorial card
+  // still renders correctly — verify the step title instead
+  await expect(page.locator('.tut-title')).toContainText('Merge & Simplify');
+});
+
+test('Tutorial — step 6 highlights the legend', async ({ page }) => {
+  await page.locator('#tutorial-btn').click();
+  for (let i = 0; i < 5; i++) await page.locator('#tut-next-btn').click();
   await expect(page.locator('#legend')).toHaveClass(/tutorial-highlight/);
 });
 
-test('Tutorial — step 6 highlights the side panel', async ({ page }) => {
+test('Tutorial — step 7 highlights the side panel', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
-  for (let i = 0; i < 5; i++) await page.locator('#tut-next-btn').click();
+  for (let i = 0; i < 6; i++) await page.locator('#tut-next-btn').click();
   await expect(page.locator('#side-panel')).toHaveClass(/tutorial-highlight/);
 });
 
-test('Tutorial — step 7 highlights the io-bar', async ({ page }) => {
+test('Tutorial — step 8 highlights the io-bar', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
-  for (let i = 0; i < 6; i++) await page.locator('#tut-next-btn').click();
+  for (let i = 0; i < 7; i++) await page.locator('#tut-next-btn').click();
   await expect(page.locator('#io-bar')).toHaveClass(/tutorial-highlight/);
 });
 
@@ -177,19 +185,19 @@ test('Tutorial — advancing clears the previous step highlight', async ({ page 
 
 test('Tutorial — last step shows "Finish" button label', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
-  for (let i = 0; i < 7; i++) await page.locator('#tut-next-btn').click();
+  for (let i = 0; i < 8; i++) await page.locator('#tut-next-btn').click();
   await expect(page.locator('#tut-next-btn')).toHaveText('Finish');
 });
 
 test('Tutorial — last step title is the outro', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
-  for (let i = 0; i < 7; i++) await page.locator('#tut-next-btn').click();
+  for (let i = 0; i < 8; i++) await page.locator('#tut-next-btn').click();
   await expect(page.locator('.tut-title')).toContainText('The Adventure Begins');
 });
 
 test('Tutorial — Finish closes the tutorial', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
-  for (let i = 0; i < 8; i++) await page.locator('#tut-next-btn').click();
+  for (let i = 0; i < 9; i++) await page.locator('#tut-next-btn').click();
   await expect(page.locator('#tutorial-card')).not.toBeVisible();
   await expect(page.locator('#tutorial-dim')).not.toHaveClass(/visible/);
 });
@@ -201,14 +209,14 @@ test('Tutorial — can be reopened after closing with ✕', async ({ page }) => 
   await page.locator('.tut-step-close').click();
   await page.locator('#tutorial-btn').click();
   await expect(page.locator('#tutorial-card')).toBeVisible();
-  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 8');
+  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 9');
 });
 
 test('Tutorial — reopening after Finish restarts from step 1', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
   for (let i = 0; i < 8; i++) await page.locator('#tut-next-btn').click();
   await page.locator('#tutorial-btn').click();
-  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 8');
+  await expect(page.locator('#tutorial-card')).toContainText('Step 1 of 9');
 });
 
 // ── App remains interactive during tutorial ───────────────────────────────────

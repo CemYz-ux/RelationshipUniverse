@@ -2,6 +2,7 @@ import { state, dom } from './state.js';
 import { getColor, getSize } from './helpers.js';
 import { showPanel } from './sidePanel.js';
 import { startLinkPickMode } from './linkMode.js';
+import { startMergePickMode } from './mergeMode.js';
 
 export function showBubble(e, d) {
   // Toggle off if same node tapped again
@@ -33,6 +34,13 @@ dom.nbLink.addEventListener('click', e => {
   const id = state.bubbleNodeId;
   hideBubble();
   startLinkPickMode(id);
+});
+
+dom.nbMerge.addEventListener('click', e => {
+  e.stopPropagation();
+  const id = state.bubbleNodeId;
+  hideBubble();
+  startMergePickMode(id);
 });
 
 dom.nbInfo.addEventListener('click', e => {

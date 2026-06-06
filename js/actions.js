@@ -40,6 +40,29 @@ export function createExtraLink(sourceId, targetId) {
   if (src) showPanel({ stopPropagation: () => {} }, src);
 }
 
+export function mergePerson(primaryId, secondaryId) {
+  // Redirect all links that reference secondary → primary
+  state.extraLinks = state.extraLinks.map(l => ({
+    source: l.source === secondaryId ? primaryId : l.source,
+    target: l.target === secondaryId ? primaryId : l.target,
+  }));
+  // Remove self-links and duplicates introduced by the redirect
+  const seen = new Set();
+  state.extraLinks = state.extraLinks.filter(l => {
+    if (l.source === l.target) return false;
+    const key = [l.source, l.target].sort().join('|');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  state.nodes = state.nodes.filter(n => n.id !== secondaryId);
+  hidePanel();
+  rebuildLinks();
+  buildGraph();
+  getSimulation().alpha(0.5).restart();
+  saveToStorage();
+}
+
 export function removeExtraLink(idA, idB) {
   state.extraLinks = state.extraLinks.filter(l =>
     !((l.source === idA && l.target === idB) || (l.source === idB && l.target === idA))
