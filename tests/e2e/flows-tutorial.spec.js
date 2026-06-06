@@ -173,6 +173,18 @@ test('Tutorial — step 8 highlights the Untangle button', async ({ page }) => {
   await expect(page.locator('button[onclick="untangleNodes()"]')).toHaveClass(/tutorial-highlight/);
 });
 
+test('Tutorial — step 8 lifts #io-bar above the dim overlay', async ({ page }) => {
+  await page.locator('#tutorial-btn').click();
+  for (let i = 0; i < 7; i++) await page.locator('#tut-next-btn').click();
+  await expect(page.locator('#io-bar')).toHaveClass(/tutorial-lift/);
+});
+
+test('Tutorial — advancing past step 8 removes tutorial-lift from #io-bar', async ({ page }) => {
+  await page.locator('#tutorial-btn').click();
+  for (let i = 0; i < 8; i++) await page.locator('#tut-next-btn').click();
+  await expect(page.locator('#io-bar')).not.toHaveClass(/tutorial-lift/);
+});
+
 test('Tutorial — step 9 highlights the io-bar', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
   for (let i = 0; i < 8; i++) await page.locator('#tut-next-btn').click();

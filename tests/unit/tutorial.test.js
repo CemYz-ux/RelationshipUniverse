@@ -66,7 +66,7 @@ function setupDOM() {
     <div id="legend"></div>
     <div id="nb-link"></div>
     <div id="side-panel"></div>
-    <div id="io-bar"></div>
+    <div id="io-bar"><button onclick="untangleNodes()">⊹ Untangle</button></div>
     <svg id="svg">
       <g class="node-group" data-node-id="me"></g>
     </svg>
@@ -265,5 +265,28 @@ describe('Highlight behaviour', () => {
     document.querySelector('#tut-next-btn').click(); // → step 3
     const meNode = document.querySelector('.node-group[data-node-id="me"]');
     expect(meNode.classList.contains('tutorial-highlight-svg')).toBe(false);
+  });
+
+  it('step 8 applies tutorial-lift to #io-bar', async () => {
+    const { startTutorial } = await import('../../js/tutorial.js');
+    startTutorial();
+    for (let i = 0; i < 7; i++) document.querySelector('#tut-next-btn').click(); // → step 8
+    expect(document.getElementById('io-bar').classList.contains('tutorial-lift')).toBe(true);
+  });
+
+  it('advancing past step 8 removes tutorial-lift from #io-bar', async () => {
+    const { startTutorial } = await import('../../js/tutorial.js');
+    startTutorial();
+    for (let i = 0; i < 7; i++) document.querySelector('#tut-next-btn').click(); // → step 8
+    document.querySelector('#tut-next-btn').click(); // → step 9
+    expect(document.getElementById('io-bar').classList.contains('tutorial-lift')).toBe(false);
+  });
+
+  it('closing on step 8 removes tutorial-lift from #io-bar', async () => {
+    const { startTutorial, closeTutorial } = await import('../../js/tutorial.js');
+    startTutorial();
+    for (let i = 0; i < 7; i++) document.querySelector('#tut-next-btn').click(); // → step 8
+    closeTutorial();
+    expect(document.getElementById('io-bar').classList.contains('tutorial-lift')).toBe(false);
   });
 });

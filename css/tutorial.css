@@ -122,6 +122,13 @@
 
 /* ── Highlight ring on targeted elements ─────────────────────────────────── */
 
+/* Lifts a parent container above the dim overlay without adding a glow ring.
+   Used when the actual target is a child that can't escape its stacking context. */
+.tutorial-lift {
+  position: relative;
+  z-index: 296 !important;
+}
+
 .tutorial-highlight {
   position: relative;
   z-index: 295 !important;

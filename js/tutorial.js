@@ -41,6 +41,9 @@ export const STEPS = [
     title: 'Untangle the Web',
     body: 'Nodes getting crowded? Hit <strong>⊹ Untangle</strong> to snap everything into a clean radial layout — connected people placed side by side, you at the centre.',
     targetFn: () => document.querySelector('button[onclick="untangleNodes()"]'),
+    // #io-bar creates a stacking context at z-index 20 — lift it above the dim (z-index 290)
+    // so the highlighted button is actually visible to the user.
+    parentFn: () => document.getElementById('io-bar'),
   },
   {
     title: 'Share Your Universe',
@@ -56,6 +59,7 @@ export const STEPS = [
 
 let currentStep = -1;
 let highlightedEl = null;
+let liftedEl = null;
 
 function getCard()   { return document.getElementById('tutorial-card'); }
 function getDim()    { return document.getElementById('tutorial-dim'); }
@@ -83,13 +87,18 @@ function prevStep() {
 }
 
 function clearHighlight() {
-  if (!highlightedEl) return;
-  if (highlightedEl._isSVG) {
-    highlightedEl.el.classList.remove('tutorial-highlight-svg');
-  } else {
-    highlightedEl.el.classList.remove('tutorial-highlight');
+  if (highlightedEl) {
+    if (highlightedEl._isSVG) {
+      highlightedEl.el.classList.remove('tutorial-highlight-svg');
+    } else {
+      highlightedEl.el.classList.remove('tutorial-highlight');
+    }
+    highlightedEl = null;
   }
-  highlightedEl = null;
+  if (liftedEl) {
+    liftedEl.classList.remove('tutorial-lift');
+    liftedEl = null;
+  }
 }
 
 function render() {
@@ -109,6 +118,15 @@ function render() {
       const cls = step.isSVG ? 'tutorial-highlight-svg' : 'tutorial-highlight';
       targetEl.classList.add(cls);
       highlightedEl = { el: targetEl, _isSVG: step.isSVG };
+    }
+  }
+
+  // Lift parent element above the dim when the target lives inside a stacking context
+  if (step.parentFn) {
+    const parent = step.parentFn();
+    if (parent) {
+      parent.classList.add('tutorial-lift');
+      liftedEl = parent;
     }
   }
 
