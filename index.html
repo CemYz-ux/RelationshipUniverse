@@ -54,9 +54,10 @@
   <link rel="stylesheet" href="css/bubble.css">
   <link rel="stylesheet" href="css/panels.css">
   <link rel="stylesheet" href="css/controls.css">
-  <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/modal.css">
   <link rel="stylesheet" href="css/tutorial.css">
+  <link rel="stylesheet" href="css/mapView.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 
@@ -116,6 +117,21 @@
     <div class="legend-item"><div class="legend-dot" style="background:#aaaaaa;"></div>Other</div>
   </div>
 
+  <!-- Map view switch -->
+  <label id="map-switch" title="Toggle world map view">
+    <span class="map-switch-label">Graph</span>
+    <span class="map-switch-track" onclick="toggleMapView()">
+      <span class="map-switch-thumb"></span>
+    </span>
+    <span class="map-switch-label">Map</span>
+  </label>
+
+  <!-- No-location notice (shown inside map view) -->
+  <div id="map-no-location">
+    <strong>Not on map:</strong>
+    <span id="map-nl-list"></span>
+  </div>
+
   <!-- Import / Export bar -->
   <div id="io-bar">
     <button class="btn-io" onclick="untangleNodes()" title="Untangle nodes into a clean radial layout">⊹ Untangle</button>
@@ -165,7 +181,10 @@
       </div>
       <div class="edit-field">
         <label class="edit-label">Location</label>
-        <input class="edit-input" id="edit-location" type="text" maxlength="28" />
+        <div class="city-search-wrap">
+          <input class="edit-input" id="edit-location" type="text" maxlength="40" autocomplete="off" />
+          <div id="edit-location-dropdown" class="city-dropdown"></div>
+        </div>
       </div>
       <div class="edit-field">
         <label class="edit-label">Note</label>
@@ -218,7 +237,10 @@
     </div>
     <input type="hidden" id="type-select" value="partner">
     <div class="panel-divider"></div>
-    <input id="location-input" type="text" placeholder="Location…" maxlength="20" />
+    <div class="city-search-wrap city-search-up">
+      <input id="location-input" type="text" placeholder="Location…" maxlength="40" autocomplete="off" />
+      <div id="location-dropdown" class="city-dropdown"></div>
+    </div>
     <div class="panel-divider"></div>
     <button class="btn-add" id="btn-add-main" onclick="addPerson()">+ Add</button>
   </div>

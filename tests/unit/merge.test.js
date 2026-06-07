@@ -11,8 +11,9 @@ vi.mock('../../js/graph.js', () => ({
   rebuildLinks:  vi.fn(),
   getSimulation: vi.fn(() => ({ alpha: vi.fn().mockReturnThis(), restart: vi.fn() })),
 }));
-vi.mock('../../js/storage.js', () => ({ saveToStorage: vi.fn() }));
+vi.mock('../../js/storage.js',  () => ({ saveToStorage: vi.fn() }));
 vi.mock('../../js/sidePanel.js', () => ({ hidePanel: vi.fn(), showPanel: vi.fn() }));
+vi.mock('../../js/mapView.js',  () => ({ refreshMapIfActive: vi.fn() }));
 
 import { mergePerson } from '../../js/actions.js';
 

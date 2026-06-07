@@ -2,6 +2,17 @@ import { state } from './state.js';
 import { buildGraph, rebuildLinks, getSimulation } from './graph.js';
 import { saveToStorage } from './storage.js';
 import { hidePanel, showPanel } from './sidePanel.js';
+import { refreshMapIfActive } from './mapView.js';
+
+// In map view the simulation must stay stopped; reposition nodes on the map instead.
+function restartOrRefresh(alpha = 0.3) {
+  if (state.mapViewActive) {
+    getSimulation()?.stop();
+    refreshMapIfActive();
+  } else {
+    getSimulation().alpha(alpha).restart();
+  }
+}
 
 export function removePerson(id) {
   state.nodes      = state.nodes.filter(n => n.id !== id);
@@ -9,7 +20,7 @@ export function removePerson(id) {
   hidePanel();
   rebuildLinks();
   buildGraph();
-  getSimulation().alpha(0.5).restart();
+  restartOrRefresh(0.5);
   saveToStorage();
 }
 
@@ -20,7 +31,7 @@ export function clearAll() {
   hidePanel();
   rebuildLinks();
   buildGraph();
-  getSimulation().alpha(0.3).restart();
+  restartOrRefresh(0.3);
   saveToStorage();
 }
 
@@ -33,7 +44,7 @@ export function createExtraLink(sourceId, targetId) {
     state.extraLinks.push({ source: sourceId, target: targetId });
     rebuildLinks();
     buildGraph();
-    getSimulation().alpha(0.2).restart();
+    restartOrRefresh(0.2);
     saveToStorage();
   }
   const src = state.nodes.find(n => n.id === sourceId);
@@ -59,7 +70,7 @@ export function mergePerson(primaryId, secondaryId) {
   hidePanel();
   rebuildLinks();
   buildGraph();
-  getSimulation().alpha(0.5).restart();
+  restartOrRefresh(0.5);
   saveToStorage();
 }
 
@@ -69,7 +80,7 @@ export function removeExtraLink(idA, idB) {
   );
   rebuildLinks();
   buildGraph();
-  getSimulation().alpha(0.2).restart();
+  restartOrRefresh(0.2);
   saveToStorage();
   const d = state.nodes.find(n => n.id === idA);
   if (d) showPanel({ stopPropagation: () => {} }, d);

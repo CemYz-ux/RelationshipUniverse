@@ -46,6 +46,11 @@ export const STEPS = [
     parentFn: () => document.getElementById('io-bar'),
   },
   {
+    title: 'Explore the Map',
+    body: 'When adding someone, type a <strong>location</strong> to pin them geographically. Then toggle <strong>○ Map</strong> to switch your graph to an interactive world map — nodes without a location are listed separately.',
+    targetFn: () => document.getElementById('map-switch'),
+  },
+  {
     title: 'Share Your Universe',
     body: 'Hit <strong>Share</strong> to copy a compressed link, or <strong>QR</strong> to generate a scannable code. Others can import your network and merge it with theirs.',
     targetFn: () => document.getElementById('io-bar'),

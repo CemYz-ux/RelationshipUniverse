@@ -3,9 +3,6 @@ import { getColor, capitalize, getStdStatus } from './helpers.js';
 
 export function showPanel(e, d) {
   if (state.linkPickMode) return;
-  if (state.selectedNodeId === d.id && dom.spEl.classList.contains('visible')) {
-    hidePanel(); return;
-  }
   state.selectedNodeId = d.id;
   state.editingNodeId  = null;
   dom.spEdit.style.display = 'none';

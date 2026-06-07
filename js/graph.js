@@ -24,7 +24,7 @@ const rg   = defs.append('radialGradient').attr('id', 'grad-me');
 rg.append('stop').attr('offset', '0%').attr('stop-color', '#fff').attr('stop-opacity', 0.18);
 rg.append('stop').attr('offset', '100%').attr('stop-color', '#fff').attr('stop-opacity', 0.03);
 
-export const g    = svg.append('g');
+export const g    = svg.append('g').attr('class', 'graph-root');
 export const zoom = d3.zoom()
   .scaleExtent([0.3, 3])
   .on('zoom', e => { g.attr('transform', e.transform); _onZoom(e); });
@@ -127,6 +127,10 @@ export function buildGraph() {
     .force('collision', d3.forceCollide().radius(d => getSize(d.type) + 20))
     .on('tick', ticked);
 
+  // In map mode the simulation must not run — node positions are managed by
+  // mapView.js and any ticks would strip the counter-scale transform off nodes.
+  if (state.mapViewActive) simulation.stop();
+
   const me = state.nodes.find(n => n.id === 'me');
   if (me) { me.fx = width / 2; me.fy = height / 2; }
 }
@@ -141,14 +145,17 @@ function ticked() {
 // ── Drag ──────────────────────────────────────────────────────────────────────
 
 function dragStart(e, d) {
+  if (state.mapViewActive) return;   // nodes are pinned to map coords — don't touch the sim
   _onDragStart();
   if (!e.active) simulation.alphaTarget(0.3).restart();
   if (d.id !== 'me') { d.fx = d.x; d.fy = d.y; }
 }
 function dragged(e, d) {
+  if (state.mapViewActive) return;
   if (d.id !== 'me') { d.fx = e.x; d.fy = e.y; }
 }
 function dragEnd(e, d) {
+  if (state.mapViewActive) return;
   if (!e.active) simulation.alphaTarget(0);
   if (d.id !== 'me') { d.fx = null; d.fy = null; }
 }

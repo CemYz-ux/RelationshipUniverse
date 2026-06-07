@@ -12,6 +12,7 @@ export const state = {
   editingNodeId:        null,
   bubbleNodeId:         null,
   pendingNetworkNodeId: null,
+  mapViewActive:        false,
 };
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────

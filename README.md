@@ -51,7 +51,17 @@ Opened via **↑ Import via link or QR** in the details panel. Two ways to impor
 
 The imported network merges anchored to the node you opened the panel from, with full deduplication by name + location.
 
-### 8. Top bar
+### 8. Map view
+
+Toggle between the force-graph and an interactive world map using the **Graph ○ Map** switch in the top-right corner.
+
+- Add a **location** when creating or editing a node — the geocoder resolves it to coordinates automatically.
+- Switch to **Map** to see located nodes pinned geographically. Nodes are projected with Mercator and counter-scaled so their visual size stays constant regardless of zoom level.
+- Two nodes at the same location stack on top of each other (no artificial spreading).
+- Nodes without a location are hidden on the map and listed in a **Not on map:** notice so you always know who is missing.
+- Pan and zoom the map normally; switch back to **Graph** to restore the force simulation exactly where you left it.
+
+### 9. Top bar
 
 | Button | Action |
 |--------|--------|
@@ -61,11 +71,11 @@ The imported network merges anchored to the node you opened the panel from, with
 | **✕ Clear** | Remove all nodes and connections (with confirmation) |
 | **⋯** | Backup (export JSON) · Restore (import JSON) |
 
-### 9. Tutorial
+### 10. Tutorial
 
-Click the **?** button in the top-right corner (next to the GitHub icon) to launch the interactive tutorial. It walks through all core features as a 10-step hero's journey — each step highlights the relevant UI element and explains what it does. You can navigate with **Next →** / **← Back**, or close at any time with **✕**.
+Click the **?** button in the top-right corner (next to the GitHub icon) to launch the interactive tutorial. It walks through all core features as an 11-step hero's journey — each step highlights the relevant UI element and explains what it does. You can navigate with **Next →** / **← Back**, or close at any time with **✕**.
 
-### 10. Share & import flows
+### 11. Share & import flows
 
 **Share your network:**
 - **⤴ Share** → copies URL to clipboard → paste anywhere
@@ -77,7 +87,7 @@ Click the **?** button in the top-right corner (next to the GitHub icon) to laun
 
 > **Note:** Share URLs work well for small-to-medium graphs. Very large graphs produce long URLs that may be truncated by some messaging apps. Use **⋯ → Backup JSON** for large graphs or permanent backups.
 
-### 11. Rearrange
+### 12. Rearrange
 
 Drag nodes to reposition. Scroll or pinch to zoom. Everything saves automatically in `localStorage`.
 
@@ -98,7 +108,9 @@ Hit **⊹ Untangle** any time to reset to a clean radial layout — useful when 
 - **Smart merge** — deduplicates by name + location (including yourself)
 - **Export filename** — `<Name>-<Location>-Network.json`
 - **Untangle layout** — one-click radial layout that places you at the centre and groups connected people side by side, with no link lines crossing through the centre node
-- **Interactive tutorial** — 10-step hero's journey triggered by **?** in the top-right; highlights each UI element in sequence, closable at any time
+- **Interactive tutorial** — 11-step hero's journey triggered by **?** in the top-right; highlights each UI element in sequence, closable at any time
+- **Map view** — toggle to an interactive world map; located nodes are pinned geographically, unlocated nodes are listed in a "Not on map" notice
+- **Geographic geocoding** — type a city or place name when adding/editing a node; coordinates are resolved automatically via the Photon geocoder
 - **Mobile-friendly** — responsive, safe-area aware
 - **Persisted locally** — auto-saved in `localStorage`
 
@@ -158,6 +170,8 @@ Push to a public repo → **Settings → Pages** → source: root of `main` bran
 - [qrcodejs](https://github.com/davidshimjs/qrcodejs) — QR code generation
 - [jsQR](https://github.com/cozmo/jsQR) — QR code scanning
 - Plain HTML / CSS / JS — no framework, no build step
-- ES modules — `js/` (17 modules) and `css/` (8 files)
+- ES modules — `js/` (20 modules) and `css/` (8 files)
+- [Photon by Komoot](https://photon.komoot.io/) — open-source geocoding API (city search)
+- [world-atlas](https://github.com/topojson/world-atlas) + [topojson-client](https://github.com/topojson/topojson-client) — country outlines for map view
 - [Vitest](https://vitest.dev/) — unit tests (`tests/unit/`)
 - [Playwright](https://playwright.dev/) — end-to-end tests (`tests/e2e/`)

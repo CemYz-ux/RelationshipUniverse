@@ -1,0 +1,176 @@
+/* ── Tile layer ───────────────────────────────────────────────────────────── */
+
+/* ── Land layer ───────────────────────────────────────────────────────────── */
+
+.land-layer {
+  pointer-events: none;
+}
+
+/* Country fills — just enough to distinguish land from water */
+.land-fill {
+  fill:   rgba(255, 255, 255, 0.05);
+  stroke: none;
+}
+
+/* Internal country borders — subtle dashed lines */
+.land-borders {
+  fill:         none;
+  stroke:       rgba(255, 255, 255, 0.10);
+  stroke-width: 0.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Coastlines — slightly brighter so the continents read clearly */
+.land-coast {
+  fill:         none;
+  stroke:       rgba(255, 255, 255, 0.20);
+  stroke-width: 0.7px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ── Map view switch ──────────────────────────────────────────────────────── */
+
+#map-switch {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.map-switch-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+
+.map-switch-track {
+  position: relative;
+  width: 34px;
+  height: 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 99px;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.map-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
+}
+
+/* Active (map) state */
+#map-switch.active .map-switch-track {
+  background: rgba(201,184,255,0.18);
+  border-color: rgba(201,184,255,0.35);
+}
+
+#map-switch.active .map-switch-thumb {
+  transform: translateX(16px);
+  background: #c9b8ff;
+}
+
+#map-switch.active .map-switch-label:last-child { color: #c9b8ff; }
+#map-switch.active .map-switch-label:first-child { color: var(--text-dim); }
+
+/* ── No-location notice ───────────────────────────────────────────────────── */
+
+#map-no-location {
+  display: none;
+  position: absolute;
+  bottom: 18px;
+  right: 24px;
+  z-index: 20;
+  background: rgba(18, 18, 28, 0.88);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 8px 13px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  max-width: 220px;
+  pointer-events: none;
+}
+
+#map-no-location strong {
+  display: block;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+
+/* ── City search dropdown ─────────────────────────────────────────────────── */
+
+.city-search-wrap {
+  position: relative;
+}
+
+.city-dropdown {
+  display: none;
+  position: absolute;
+  left: 0;
+  min-width: 200px;
+  background: #16161f;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 4px;
+  z-index: 200;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.65);
+  overflow: hidden;
+}
+
+.city-dropdown.open { display: block; }
+
+/* Add panel: dropdown opens upward */
+.city-search-up .city-dropdown {
+  bottom: calc(100% + 8px);
+  top: auto;
+}
+
+/* Edit panel: dropdown opens downward */
+.city-search-wrap:not(.city-search-up) .city-dropdown {
+  top: calc(100% + 4px);
+  bottom: auto;
+}
+
+.city-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.city-item:hover,
+.city-item-active {
+  background: rgba(201,184,255,0.1);
+}
+
+.city-item-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.city-item-ctx {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

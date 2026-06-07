@@ -3,6 +3,14 @@ import { buildGraph, rebuildLinks, getSimulation, width, height } from './graph.
 import { saveToStorage } from './storage.js';
 import { createTypeDropdown } from './typeDropdown.js';
 import { nodeKey, linkExists } from './helpers.js';
+import { attachCitySearch, searchCities } from './geocode.js';
+import { refreshMapIfActive } from './mapView.js';
+
+let pendingGeocode = null;
+
+const locationInput    = document.getElementById('location-input');
+const locationDropdown = document.getElementById('location-dropdown');
+attachCitySearch(locationInput, locationDropdown, result => { pendingGeocode = result; });
 
 export const addDropdown = createTypeDropdown({
   menuId:  'type-menu',
@@ -12,11 +20,17 @@ export const addDropdown = createTypeDropdown({
   fixed:   false
 });
 
-export function addPerson() {
+export async function addPerson() {
   const name     = document.getElementById('name-input').value.trim();
   const type     = addDropdown.getValue();
   const location = document.getElementById('location-input').value.trim();
   if (!name) return;
+
+  // If user typed a location but didn't pick from the dropdown, auto-geocode the first result.
+  if (location && !pendingGeocode) {
+    const results = await searchCities(location);
+    if (results.length) pendingGeocode = { lat: results[0].lat, lng: results[0].lng };
+  }
 
   const fromId   = state.connectMode || 'me';
   const fromNode = state.nodes.find(n => n.id === fromId);
@@ -47,6 +61,8 @@ export function addPerson() {
   state.nodes.push({
     id, name, type,
     location: location || null,
+    lat: pendingGeocode?.lat ?? null,
+    lng: pendingGeocode?.lng ?? null,
     note: '',
     x: px + Math.cos(angle) * dist,
     y: py + Math.sin(angle) * dist
@@ -59,6 +75,7 @@ export function addPerson() {
   buildGraph();
   getSimulation().alpha(0.4).restart();
   saveToStorage();
+  refreshMapIfActive();
 }
 
 export function startConnectMode(nodeId, nodeName) {
@@ -80,6 +97,7 @@ export function clearAddPanel() {
   document.getElementById('name-input').value     = '';
   document.getElementById('location-input').value = '';
   addDropdown.select('partner');
+  pendingGeocode = null;
 }
 
 // Enter key on inputs

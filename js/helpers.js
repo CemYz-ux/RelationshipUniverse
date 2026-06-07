@@ -28,6 +28,8 @@ export function parseNodeArray(arr) {
     name:     n.name     || 'Unknown',
     type:     n.id === 'me' ? 'me' : (n.type || 'other'),
     location:      n.location      || null,
+    lat:           n.lat           || null,
+    lng:           n.lng           || null,
     note:          n.note          || '',
     stdTestedDate: n.stdTestedDate || null
   }));

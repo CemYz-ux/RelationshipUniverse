@@ -132,7 +132,44 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 9. Untangle the graph
+## 9. Switch to map view
+
+**Goal:** View located nodes pinned on an interactive world map.
+
+**Steps:**
+1. When adding or editing a node, enter a place name in the **Location** field — the geocoder resolves it to coordinates and stores `lat`/`lng` on the node.
+2. Click the **Graph ○ Map** toggle in the top-right corner to switch to map view.
+
+**Expected outcome:**
+- The graph animates into a Mercator world map.
+- Nodes that have coordinates appear pinned at their geographic location.
+- Nodes without coordinates fade out and their names are listed in the **Not on map:** notice.
+- Node visual size stays constant regardless of zoom level (counter-scaled against the map transform).
+- Panning and zooming the map works normally.
+- A **Not on map:** notice listing unlocated nodes appears (the You node is always listed there since it carries no coordinates by default).
+
+**Constraints:**
+- Map view state is not persisted — reloading the page always returns to graph view.
+- The add panel remains available in map view; adding a located node refreshes its map position immediately.
+
+---
+
+## 10. Return to graph view from map
+
+**Goal:** Switch back from map view to the force-graph.
+
+**Steps:**
+1. Click the **Graph ○ Map** toggle again.
+
+**Expected outcome:**
+- The map and land layer are removed.
+- Nodes are restored to their pre-map positions and the force simulation restarts.
+- All previously hidden nodes reappear at full opacity.
+- The **Not on map:** notice disappears.
+
+---
+
+## 11. Untangle the graph
 
 **Goal:** Reset a crowded or tangled graph into a clean, readable radial layout with one click.
 
@@ -153,7 +190,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 10. Drag and zoom
+## 12. Drag and zoom
 
 **Goal:** Rearrange the graph layout manually.
 
@@ -168,7 +205,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 11. Backup graph as JSON
+## 13. Backup graph as JSON
 
 **Goal:** Save the graph to a file for archiving or large-graph sharing.
 
@@ -181,7 +218,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 12. Restore graph from JSON
+## 14. Restore graph from JSON
 
 **Goal:** Load a previously backed-up graph, replacing the current one.
 
@@ -195,7 +232,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 13. Share graph via URL
+## 15. Share graph via URL
 
 **Goal:** Share the entire graph as a link without a file.
 
@@ -211,7 +248,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 14. Show my QR code
+## 16. Show my QR code
 
 **Goal:** Display your graph as a QR code for in-person sharing.
 
@@ -225,7 +262,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 15. Import graph from share URL (replace)
+## 17. Import graph from share URL (replace)
 
 **Goal:** Open someone's shared graph link and load it.
 
@@ -240,7 +277,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 16. Import a person's network — merge via JSON
+## 18. Import a person's network — merge via JSON
 
 **Goal:** Merge another person's graph into your own, anchored to their node.
 
@@ -259,7 +296,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 17. Import a person's network — merge via URL or QR
+## 19. Import a person's network — merge via URL or QR
 
 **Goal:** Merge someone's network using their share URL or QR code.
 
@@ -280,7 +317,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 18. Persist across sessions
+## 20. Persist across sessions
 
 **Goal:** Verify the graph survives a page reload.
 
@@ -294,7 +331,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 19. Record a person's last STD test date
+## 21. Record a person's last STD test date
 
 **Goal:** Log when a person was last tested so their status is visible on the graph.
 
@@ -316,7 +353,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 20. Clear a person's STD test date
+## 22. Clear a person's STD test date
 
 **Goal:** Remove a recorded test date (e.g. if it was entered incorrectly).
 
@@ -331,7 +368,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 21. Read STD status at a glance
+## 23. Read STD status at a glance
 
 **Goal:** Quickly assess the tested status of everyone in the graph without opening panels.
 
@@ -347,7 +384,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 22. Launch the tutorial
+## 24. Launch the tutorial
 
 **Goal:** Get a guided walkthrough of all core features without reading documentation.
 
@@ -356,22 +393,22 @@ Each flow describes the steps a user takes and the expected outcome.
 
 **Expected outcome:**
 - A dim overlay appears over the app.
-- A floating card appears at step 1 of 10 ("The Universe Awaits") with a Next → button.
+- A floating card appears at step 1 of 11 ("The Universe Awaits") with a Next → button.
 - The tutorial can be navigated forward with **Next →** and backward with **← Back**.
-- A row of 10 progress pips at the bottom of the card fills in as steps are completed.
+- A row of 11 progress pips at the bottom of the card fills in as steps are completed.
 - The **✕** button in the card header closes the tutorial at any time.
 
 ---
 
-## 23. Navigate the tutorial
+## 25. Navigate the tutorial
 
-**Goal:** Step through all 10 stages and see each feature highlighted.
+**Goal:** Step through all 11 stages and see each feature highlighted.
 
 **Steps:**
 1. Click **?** to open the tutorial.
 2. Click **Next →** to advance through steps.
 3. Optionally click **← Back** to revisit a previous step.
-4. On step 10 ("The Adventure Begins"), the Next button reads **Finish** — click it to close.
+4. On step 11 ("The Adventure Begins"), the Next button reads **Finish** — click it to close.
 
 **Steps and their highlighted elements:**
 
@@ -385,8 +422,9 @@ Each flow describes the steps a user takes and the expected outcome.
 | 6 | The Language of Colour | Legend (top-left) |
 | 7 | Track Your Health | Side panel |
 | 8 | Untangle the Web | ⊹ Untangle button (top bar) |
-| 9 | Share Your Universe | Top bar (Share / QR / Clear) |
-| 10 | The Adventure Begins | *(none — outro card centred)* |
+| 9 | Explore the Map | Graph ○ Map toggle |
+| 10 | Share Your Universe | Top bar (Share / QR / Clear) |
+| 11 | The Adventure Begins | *(none — outro card centred)* |
 
 **Expected outcome:**
 - Each step focuses on the relevant UI element with a purple glowing highlight.
@@ -395,7 +433,7 @@ Each flow describes the steps a user takes and the expected outcome.
 
 ---
 
-## 24. Close and reopen the tutorial
+## 26. Close and reopen the tutorial
 
 **Goal:** Dismiss the tutorial mid-flow and relaunch it from the beginning.
 
@@ -434,6 +472,13 @@ Each flow describes the steps a user takes and the expected outcome.
 | Click **⊹ Untangle** multiple times in a row | Stable; each press produces the same clean layout |
 | Untangle a graph with disconnected nodes | Disconnected nodes placed in an outer ring; connected nodes form the inner rings |
 | Drag a node after Untangle | Free drag works immediately (positions released after 800 ms) |
+| Toggle to map view with no located nodes | Map opens; all nodes hidden; "Not on map" notice lists everyone |
+| Toggle to map view with some located nodes | Located nodes appear pinned; unlocated nodes hidden and listed |
+| Two nodes share the same location | Both stack at exactly the same map coordinate (no artificial spread) |
+| Add a node with a location while in map view | Node appears on the map immediately after adding |
+| Reload the page while in map view | Returns to graph view (map state is not persisted) |
+| Geocoder returns no results for location text | Node is added with `lat`/`lng` = null; it appears in "Not on map" |
+| Location field filled but geocoder network is offline | Node added with null coordinates; gracefully falls back to no-location behaviour |
 | Click **?** while tutorial is already open | Tutorial is already visible; no duplicate card created |
 | Tutorial step targets an element not yet in the DOM | Highlight is silently skipped; card still appears |
 | Close tutorial on last step via ✕ instead of Finish | Same result — overlay removed, highlights cleared |

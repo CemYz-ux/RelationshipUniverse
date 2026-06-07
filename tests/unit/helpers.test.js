@@ -209,7 +209,7 @@ describe('parseNodeArray — additional edge cases', () => {
   it('does not carry through fields outside the schema', () => {
     const result = parseNodeArray([{ id: 'me' }, { id: 'a', name: 'A', type: 'friend', x: 99 }]);
     const a = result.find(n => n.id === 'a');
-    expect(Object.keys(a).sort()).toEqual(['id', 'location', 'name', 'note', 'stdTestedDate', 'type'].sort());
+    expect(Object.keys(a).sort()).toEqual(['id', 'lat', 'lng', 'location', 'name', 'note', 'stdTestedDate', 'type'].sort());
   });
 });
 

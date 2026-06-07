@@ -9,6 +9,7 @@ import { removePerson, clearAll, createExtraLink, removeExtraLink } from './acti
 import { startLinkPickMode, cancelLinkPickMode, handleLinkPickClick } from './linkMode.js';
 import { startMergePickMode, cancelMergePickMode, handleMergePickClick } from './mergeMode.js';
 import { showBubble, hideBubble } from './bubble.js';
+import { toggleMapView } from './mapView.js';
 import './tutorial.js';
 
 // ── Node click handler ────────────────────────────────────────────────────────
@@ -66,7 +67,7 @@ Object.assign(window, {
   removePerson, clearAll,
   cancelMergePickMode,
   removeExtraLink, createExtraLink,
-  exportJSON, triggerNetworkImport, shareAsURL, untangleNodes,
+  exportJSON, triggerNetworkImport, shareAsURL, untangleNodes, toggleMapView,
   showQRCode, hideQRCode,
   showImportModal, hideImportModal, importFromURLInput,
   importFromURL: (nodeId) => {

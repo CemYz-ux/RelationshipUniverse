@@ -9,8 +9,8 @@ import { toCompact, normaliseShareData } from './compress.js';
 
 export function saveToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    nodes: state.nodes.map(({ id, name, type, location, note, stdTestedDate }) =>
-      ({ id, name, type, location: location || null, note: note || '', stdTestedDate: stdTestedDate || null })
+    nodes: state.nodes.map(({ id, name, type, location, lat, lng, note, stdTestedDate }) =>
+      ({ id, name, type, location: location || null, lat: lat || null, lng: lng || null, note: note || '', stdTestedDate: stdTestedDate || null })
     ),
     extraLinks: state.extraLinks
   }));

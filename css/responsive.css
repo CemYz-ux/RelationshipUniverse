@@ -1,70 +1,207 @@
 /* ── Tablet (≤ 768px) ────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  #side-panel { width: 210px; }
+  #side-panel { width: 220px; }
   .btn-io     { padding: 4px 10px; font-size: 10px; }
 }
 
-/* ── Mobile (≤ 540px) ────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile (≤ 540px)
+   ═══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 540px) {
 
-  header { padding: 10px 14px 0; gap: 6px; }
-  header h1 { font-size: 17px; }
+  /* ── Header ────────────────────────────────────────────────────────────── */
+  header {
+    padding: 10px 14px 0;
+    gap: 6px;
+  }
+  header h1 { font-size: 16px; }
   header p  { display: none; }
 
-  /* Legend — horizontal strip above add panel */
-  #legend {
-    position: fixed;
-    display: flex;
-    top: auto;
-    bottom: max(82px, calc(76px + env(safe-area-inset-bottom)));
-    left: 12px;
-    right: 12px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    background: rgba(20, 14, 40, 0.75);
-    backdrop-filter: blur(8px);
-    border-radius: 10px;
-    padding: 6px 12px;
+  /* ── IO bar — all buttons, centred, full width on row 1 ───────────────── */
+  #io-bar {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);  /* restore desktop centering */
+    gap: 5px;
+    flex-wrap: nowrap;
+  }
+  .btn-io {
+    padding: 4px 8px;
+    font-size: 10px;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  /* ── Map toggle — row 2, right-aligned just below the IO bar ───────────── */
+  #map-switch {
+    top: 42px;   /* io-bar top(11) + button height(~22) + gap(9) */
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 5px;
+  }
+  .map-switch-label {
     font-size: 10px;
   }
 
-  #io-bar { top: 12px; gap: 4px; }
-  .btn-io { padding: 4px 8px; font-size: 10px; }
-
-  /* Side panel floats above legend */
-  #side-panel {
+  /* ── Legend — horizontal strip above the add-panel ────────────────────── */
+  #legend {
+    position: absolute;
     top: auto;
-    bottom: 130px;
-    right: 12px;
-    left: 12px;
-    width: auto;
-    border-radius: 14px;
-    max-height: 45vh;
-    overflow-y: auto;
-  }
-
-  /* Add panel — two-row layout */
-  #panel {
-    left: 12px;
-    right: 12px;
-    bottom: max(14px, calc(8px + env(safe-area-inset-bottom)));
-    transform: none;
-    border-radius: 16px;
-    padding: 7px 12px;
-    gap: 5px;
+    left: 0;
+    right: 0;
+    /* add-panel is ~126px tall (measured); sit 6px above it */
+    bottom: 132px;
+    flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 9px;
+    padding: 4px 10px;
+    background: rgba(10, 10, 16, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+    font-size: 9.5px;
+    z-index: 15;
   }
 
-  #name-input     { width: 70px; flex-shrink: 1; }
-  #location-input { width: 58px; flex-shrink: 1; }
+  /* ── Side panel → full-width bottom sheet ─────────────────────────────── */
+  #side-panel {
+    position: absolute;
+    top: auto;
+    /* legend ≈ 22px + add-panel ≈ 126px + 12px gap = 160px */
+    bottom: 164px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 52vh;
+    overflow-y: auto;
+    border-radius: 18px 18px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+    z-index: 25;
+  }
+  /* Drag-handle pip */
+  #side-panel::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.18);
+    margin: 0 auto 8px;
+  }
 
+  /* ── Add panel — 2-column grid layout ─────────────────────────────────── */
+  #panel {
+    /* anchor to bottom edge */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+    border-radius: 14px 14px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.6);
+    padding: 10px 14px max(12px, calc(8px + env(safe-area-inset-bottom)));
+    /* 2-column grid:
+       col 1 = label/type (auto width)
+       col 2 = name/location input (fills remaining space) */
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 7px 8px;
+    align-items: center;
+    z-index: 20;
+  }
+
+  /* Row 1: label | name-input */
+  #connect-to-label {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 10px;
+    white-space: nowrap;
+    /* override any flex properties from base CSS */
+    flex: none;
+  }
+  #name-input {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 13px;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--text);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Row 2: type-dropdown | location */
+  #type-dropdown {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  /* hidden select — remove from grid flow */
+  #type-select { display: none; }
+  /* .city-search-wrap wraps the location input */
+  .city-search-wrap {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  #location-input {
+    font-size: 12px;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--text);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Row 3: Add button spans both columns */
   .btn-add {
-    flex: 1 1 100%;
-    padding: 5px 0;
-    text-align: center;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 13px;
     border-radius: 10px;
+    text-align: center;
   }
 
-  .type-dropdown-menu { bottom: calc(100% + 12px); min-width: 120px; }
+  /* Hide the decorative dividers — grid gap handles spacing */
+  .panel-divider { display: none; }
+
+  /* City dropdown opens upward (panel is at bottom of screen) */
+  .city-search-wrap .city-dropdown {
+    bottom: calc(100% + 6px);
+    top: auto;
+  }
+
+  /* ── No-location notice (map view) ────────────────────────────────────── */
+  #map-no-location {
+    bottom: 160px;   /* above the legend strip (legend bottom 132px + height ~22px + gap) */
+    left: 12px;
+    right: auto;
+    max-width: 190px;
+    font-size: 9.5px;
+    padding: 7px 10px;
+    z-index: 21;
+  }
+
+  /* ── Node bubble — larger tap targets ─────────────────────────────────── */
+  .nb-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
 }

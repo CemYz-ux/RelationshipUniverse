@@ -3,6 +3,14 @@ import { buildGraph, rebuildLinks, getSimulation } from './graph.js';
 import { saveToStorage } from './storage.js';
 import { showPanel } from './sidePanel.js';
 import { createTypeDropdown } from './typeDropdown.js';
+import { attachCitySearch, searchCities } from './geocode.js';
+import { refreshMapIfActive } from './mapView.js';
+
+let editGeocode = null;
+
+const editLocInput    = document.getElementById('edit-location');
+const editLocDropdown = document.getElementById('edit-location-dropdown');
+attachCitySearch(editLocInput, editLocDropdown, result => { editGeocode = result; });
 
 const editDropdown = createTypeDropdown({
   menuId:  'edit-type-menu',
@@ -26,6 +34,9 @@ export function openEdit(id) {
   document.getElementById('edit-std-date-text').value = d.stdTestedDate || '';
   document.getElementById('edit-std-date').value      = d.stdTestedDate || '';
 
+  // Restore stored coordinates so saving without re-selecting preserves them.
+  editGeocode = (d.lat && d.lng) ? { lat: d.lat, lng: d.lng } : null;
+
   editDropdown.select(d.type || 'other');
   const dd = document.getElementById('edit-type-dropdown');
   dd.style.opacity       = id === 'me' ? '0.4' : '1';
@@ -45,13 +56,23 @@ export function cancelEdit() {
   if (d) showPanel({ stopPropagation: () => {} }, d);
 }
 
-export function saveEdit() {
+export async function saveEdit() {
   const d = state.nodes.find(n => n.id === state.editingNodeId);
   if (!d) return;
 
   d.name     = document.getElementById('edit-name').value.trim()     || d.name;
   if (d.id !== 'me') d.type = editDropdown.getValue() || d.type;
-  d.location = document.getElementById('edit-location').value.trim() || null;
+  const newLoc = document.getElementById('edit-location').value.trim() || null;
+  if (!newLoc) {
+    d.lat = null; d.lng = null;
+  } else if (editGeocode) {
+    d.lat = editGeocode.lat; d.lng = editGeocode.lng;
+  } else {
+    // User typed a location without picking from the dropdown — auto-geocode the first result.
+    const results = await searchCities(newLoc);
+    if (results.length) { d.lat = results[0].lat; d.lng = results[0].lng; }
+  }
+  d.location = newLoc;
   d.note     = document.getElementById('edit-note').value.trim()     || '';
   d.stdTestedDate = document.getElementById('edit-std-date-text').value.trim() || null;
 
@@ -61,7 +82,12 @@ export function saveEdit() {
 
   rebuildLinks();
   buildGraph();
-  getSimulation().alpha(0.3).restart();
+  if (state.mapViewActive) {
+    getSimulation()?.stop();
+    refreshMapIfActive();
+  } else {
+    getSimulation().alpha(0.3).restart();
+  }
   saveToStorage();
 
   const id = d.id;
