@@ -66,7 +66,7 @@ function setupDOM() {
     <div id="legend"></div>
     <div id="nb-link"></div>
     <div id="side-panel"></div>
-    <div id="io-bar"><button onclick="untangleNodes()">⊹ Untangle</button></div>
+    <div id="io-bar"><button id="btn-untangle">⊹ Untangle</button></div>
     <svg id="svg">
       <g class="node-group" data-node-id="me"></g>
     </svg>

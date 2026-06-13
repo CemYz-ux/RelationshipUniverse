@@ -67,26 +67,26 @@
   <a id="github-link" href="https://github.com/CemYz-ux/RelationshipUniverse" target="_blank" rel="noopener" title="View source on GitHub">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
   </a>
-  <button id="tutorial-btn" onclick="startTutorial()" title="Start tutorial">?</button>
+  <button id="tutorial-btn" data-action="startTutorial" title="Start tutorial">?</button>
 </header>
 
 <!-- QR code modal (shows MY QR only) -->
-<div id="qr-modal" onclick="hideQRCode()">
-  <div id="qr-card" onclick="event.stopPropagation()">
+<div id="qr-modal" data-action="hideQRCode">
+  <div id="qr-card">
     <p class="qr-label">Share your network</p>
     <div id="qr-code"></div>
-    <button class="qr-close" onclick="hideQRCode()">✕ Close</button>
+    <button class="qr-close" data-action="hideQRCode">✕ Close</button>
   </div>
 </div>
 
 <!-- Import modal (URL input + QR scanner) -->
-<div id="import-modal" onclick="hideImportModal()">
-  <div id="import-card" onclick="event.stopPropagation()">
+<div id="import-modal" data-action="hideImportModal">
+  <div id="import-card">
     <p class="qr-label">Import Network</p>
 
     <div class="import-url-row">
-      <input class="import-url-input" id="import-url-input" type="text" placeholder="Paste share URL…" onkeydown="if(event.key==='Enter') importFromURLInput()" />
-      <button class="import-url-btn" onclick="importFromURLInput()">↑ Import</button>
+      <input class="import-url-input" id="import-url-input" type="text" placeholder="Paste share URL…" />
+      <button class="import-url-btn" data-action="importFromURLInput">↑ Import</button>
     </div>
 
     <div class="import-or"><span>or scan QR code</span></div>
@@ -97,7 +97,7 @@
     </div>
     <p id="import-scan-status">Starting camera…</p>
 
-    <button class="qr-close" onclick="hideImportModal()">✕ Close</button>
+    <button class="qr-close" data-action="hideImportModal">✕ Close</button>
   </div>
 </div>
 
@@ -107,20 +107,13 @@
 
   <svg id="svg"></svg>
 
-  <div id="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#c9b8ff;"></div>Partner</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#ff9eb5;"></div>Friend</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#7dd4b8;"></div>Dating</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#ff5c8a;"></div>Crush</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f4a868;"></div>Fling</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#9999bb;"></div>Ex</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#aaaaaa;"></div>Other</div>
-  </div>
+  <!-- Legend items are generated from RELATIONSHIP_TYPES in main.js -->
+  <div id="legend"></div>
 
   <!-- Map view switch -->
   <label id="map-switch" title="Toggle world map view">
     <span class="map-switch-label">Graph</span>
-    <span class="map-switch-track" onclick="toggleMapView()">
+    <span class="map-switch-track" data-action="toggleMapView">
       <span class="map-switch-thumb"></span>
     </span>
     <span class="map-switch-label">Map</span>
@@ -134,15 +127,15 @@
 
   <!-- Import / Export bar -->
   <div id="io-bar">
-    <button class="btn-io" onclick="untangleNodes()" title="Untangle nodes into a clean radial layout">⊹ Untangle</button>
-    <button class="btn-io" onclick="shareAsURL()">⤴ Share</button>
-    <button class="btn-io" onclick="showQRCode()">⊡ QR</button>
-    <button class="btn-io btn-io-danger" onclick="clearAll()">✕ Clear</button>
+    <button class="btn-io" id="btn-untangle" data-action="untangleNodes" title="Untangle nodes into a clean radial layout">⊹ Untangle</button>
+    <button class="btn-io" data-action="shareAsURL">⤴ Share</button>
+    <button class="btn-io" data-action="showQRCode">⊡ QR</button>
+    <button class="btn-io btn-io-danger" data-action="clearAll">✕ Clear</button>
     <div id="io-overflow">
-      <button class="btn-io" id="io-overflow-btn" onclick="toggleOverflowMenu(event)">⋯</button>
+      <button class="btn-io" id="io-overflow-btn" data-action="toggleOverflowMenu">⋯</button>
       <div id="io-overflow-menu">
-        <button class="overflow-item" onclick="exportJSON(); closeOverflowMenu()">↓ Backup JSON</button>
-        <button class="overflow-item" onclick="document.getElementById('import-input').click(); closeOverflowMenu()">↑ Restore JSON</button>
+        <button class="overflow-item" data-action="exportJSON">↓ Backup JSON</button>
+        <button class="overflow-item" data-action="restoreJSON">↑ Restore JSON</button>
       </div>
     </div>
     <input id="import-input" type="file" accept=".json" style="display:none" />
@@ -162,20 +155,13 @@
       <div class="edit-field">
         <label class="edit-label">Type</label>
         <div id="edit-type-dropdown" class="type-dropdown">
-          <button type="button" class="type-dropdown-btn" onclick="toggleEditTypeDropdown(event)">
+          <button type="button" id="edit-type-dropdown-btn" class="type-dropdown-btn">
             <span id="edit-type-dot" class="td-dot" style="background:#c9b8ff"></span>
             <span id="edit-type-label">Partner</span>
             <span class="td-chevron">▾</span>
           </button>
-          <div id="edit-type-menu" class="type-dropdown-menu">
-            <div class="td-option" data-value="partner" onclick="selectEditType('partner')"><span class="td-dot" style="background:#c9b8ff"></span>Partner</div>
-            <div class="td-option" data-value="friend"  onclick="selectEditType('friend')" ><span class="td-dot" style="background:#ff9eb5"></span>Friend</div>
-            <div class="td-option" data-value="dating"  onclick="selectEditType('dating')" ><span class="td-dot" style="background:#7dd4b8"></span>Dating</div>
-            <div class="td-option" data-value="crush"   onclick="selectEditType('crush')"  ><span class="td-dot" style="background:#ff5c8a"></span>Crush</div>
-            <div class="td-option" data-value="fling"   onclick="selectEditType('fling')"  ><span class="td-dot" style="background:#f4a868"></span>Fling</div>
-            <div class="td-option" data-value="ex"      onclick="selectEditType('ex')"     ><span class="td-dot" style="background:#9999bb"></span>Ex</div>
-            <div class="td-option" data-value="other"   onclick="selectEditType('other')"  ><span class="td-dot" style="background:#aaaaaa"></span>Other</div>
-          </div>
+          <!-- Options generated by createTypeDropdown() -->
+          <div id="edit-type-menu" class="type-dropdown-menu"></div>
         </div>
         <input type="hidden" id="edit-type" value="partner">
       </div>
@@ -201,8 +187,8 @@
         </div>
       </div>
       <div class="edit-actions">
-        <button class="btn-cancel-edit" onclick="cancelEdit()">Cancel</button>
-        <button class="btn-save" onclick="saveEdit()">Save</button>
+        <button class="btn-cancel-edit" data-action="cancelEdit">Cancel</button>
+        <button class="btn-save" data-action="saveEdit">Save</button>
       </div>
     </div>
   </div>
@@ -220,20 +206,13 @@
     <input id="name-input" type="text" placeholder="Name…" maxlength="22" />
     <div class="panel-divider"></div>
     <div id="type-dropdown" class="type-dropdown">
-      <button type="button" class="type-dropdown-btn" onclick="toggleTypeDropdown(event)">
+      <button type="button" id="type-dropdown-btn" class="type-dropdown-btn">
         <span id="type-dot" class="td-dot" style="background:#c9b8ff"></span>
         <span id="type-label">Partner</span>
         <span class="td-chevron">▾</span>
       </button>
-      <div id="type-menu" class="type-dropdown-menu">
-        <div class="td-option selected" data-value="partner" onclick="selectType('partner')"><span class="td-dot" style="background:#c9b8ff"></span>Partner</div>
-        <div class="td-option" data-value="friend"  onclick="selectType('friend')" ><span class="td-dot" style="background:#ff9eb5"></span>Friend</div>
-        <div class="td-option" data-value="dating"  onclick="selectType('dating')" ><span class="td-dot" style="background:#7dd4b8"></span>Dating</div>
-        <div class="td-option" data-value="crush"   onclick="selectType('crush')"  ><span class="td-dot" style="background:#ff5c8a"></span>Crush</div>
-        <div class="td-option" data-value="fling"   onclick="selectType('fling')"  ><span class="td-dot" style="background:#f4a868"></span>Fling</div>
-        <div class="td-option" data-value="ex"      onclick="selectType('ex')"     ><span class="td-dot" style="background:#9999bb"></span>Ex</div>
-        <div class="td-option" data-value="other"   onclick="selectType('other')"  ><span class="td-dot" style="background:#aaaaaa"></span>Other</div>
-      </div>
+      <!-- Options generated by createTypeDropdown() -->
+      <div id="type-menu" class="type-dropdown-menu"></div>
     </div>
     <input type="hidden" id="type-select" value="partner">
     <div class="panel-divider"></div>
@@ -242,7 +221,7 @@
       <div id="location-dropdown" class="city-dropdown"></div>
     </div>
     <div class="panel-divider"></div>
-    <button class="btn-add" id="btn-add-main" onclick="addPerson()">+ Add</button>
+    <button class="btn-add" id="btn-add-main" data-action="addPerson">+ Add</button>
   </div>
 
 </div>

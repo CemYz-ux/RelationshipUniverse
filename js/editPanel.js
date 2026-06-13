@@ -1,10 +1,10 @@
 import { state, dom } from './state.js';
-import { buildGraph, rebuildLinks, getSimulation } from './graph.js';
+import { buildGraph, rebuildLinks } from './graph.js';
 import { saveToStorage } from './storage.js';
 import { showPanel } from './sidePanel.js';
 import { createTypeDropdown } from './typeDropdown.js';
 import { attachCitySearch, searchCities } from './geocode.js';
-import { refreshMapIfActive } from './mapView.js';
+import { restartOrRefresh } from './sim.js';
 
 let editGeocode = null;
 
@@ -13,6 +13,7 @@ const editLocDropdown = document.getElementById('edit-location-dropdown');
 attachCitySearch(editLocInput, editLocDropdown, result => { editGeocode = result; });
 
 const editDropdown = createTypeDropdown({
+  btnId:   'edit-type-dropdown-btn',
   menuId:  'edit-type-menu',
   dotId:   'edit-type-dot',
   labelId: 'edit-type-label',
@@ -82,12 +83,7 @@ export async function saveEdit() {
 
   rebuildLinks();
   buildGraph();
-  if (state.mapViewActive) {
-    getSimulation()?.stop();
-    refreshMapIfActive();
-  } else {
-    getSimulation().alpha(0.3).restart();
-  }
+  restartOrRefresh(0.3);
   saveToStorage();
 
   const id = d.id;

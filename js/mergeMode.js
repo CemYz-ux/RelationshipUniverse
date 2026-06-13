@@ -16,7 +16,7 @@ export function startMergePickMode(fromId) {
     <div class="tt-row" style="margin-top:8px;">Click a node to merge into <strong>${from.name}</strong>.<br>
     <span style="opacity:.6;font-size:12px;">The selected node will be absorbed — its links move to ${from.name}.</span></div>
     <div class="tt-actions">
-      <button class="btn-tt btn-tt-neutral" onclick="cancelMergePickMode()">✕ Cancel</button>
+      <button class="btn-tt btn-tt-neutral" data-action="cancelMergePickMode">✕ Cancel</button>
     </div>`;
   dom.spEdit.style.display = 'none';
   dom.spView.style.display = 'block';

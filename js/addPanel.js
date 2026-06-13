@@ -13,6 +13,7 @@ const locationDropdown = document.getElementById('location-dropdown');
 attachCitySearch(locationInput, locationDropdown, result => { pendingGeocode = result; });
 
 export const addDropdown = createTypeDropdown({
+  btnId:   'type-dropdown-btn',
   menuId:  'type-menu',
   dotId:   'type-dot',
   labelId: 'type-label',

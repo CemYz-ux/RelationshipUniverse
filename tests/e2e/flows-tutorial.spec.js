@@ -170,7 +170,7 @@ test('Tutorial — step 7 highlights the side panel', async ({ page }) => {
 test('Tutorial — step 8 highlights the Untangle button', async ({ page }) => {
   await page.locator('#tutorial-btn').click();
   for (let i = 0; i < 7; i++) await page.locator('#tut-next-btn').click();
-  await expect(page.locator('button[onclick="untangleNodes()"]')).toHaveClass(/tutorial-highlight/);
+  await expect(page.locator('#btn-untangle')).toHaveClass(/tutorial-highlight/);
 });
 
 test('Tutorial — step 8 lifts #io-bar above the dim overlay', async ({ page }) => {

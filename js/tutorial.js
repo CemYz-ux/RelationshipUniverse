@@ -40,7 +40,7 @@ export const STEPS = [
   {
     title: 'Untangle the Web',
     body: 'Nodes getting crowded? Hit <strong>⊹ Untangle</strong> to snap everything into a clean radial layout — connected people placed side by side, you at the centre.',
-    targetFn: () => document.querySelector('button[onclick="untangleNodes()"]'),
+    targetFn: () => document.getElementById('btn-untangle'),
     // #io-bar creates a stacking context at z-index 20 — lift it above the dim (z-index 290)
     // so the highlighted button is actually visible to the user.
     parentFn: () => document.getElementById('io-bar'),
@@ -207,5 +207,3 @@ function positionCard(card, targetEl, isSVG) {
   card.style.left = left + 'px';
 }
 
-// Expose for inline HTML onclick
-window.startTutorial = startTutorial;

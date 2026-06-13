@@ -1,16 +1,18 @@
 import { state, dom } from './state.js';
-import { loadFromStorage, saveToStorage, exportJSON, importJSON, importNetworkJSON, triggerNetworkImport, shareAsURL, checkShareURL, importNetworkFromURL } from './storage.js';
+import { loadFromStorage, exportJSON, importJSON, importNetworkJSON, triggerNetworkImport, shareAsURL, checkShareURL } from './storage.js';
 import { showQRCode, hideQRCode, showImportModal, hideImportModal, importFromURLInput } from './qr.js';
 import { buildGraph, rebuildLinks, getSimulation, svg, updateDimensions, setNodeClickHandler, setDragStartCallback, setZoomCallback, untangleNodes } from './graph.js';
-import { showPanel, hidePanel } from './sidePanel.js';
+import { hidePanel } from './sidePanel.js';
 import { openEdit, cancelEdit, saveEdit, editDropdown } from './editPanel.js';
-import { addPerson, startConnectMode, cancelConnectMode, clearAddPanel, addDropdown } from './addPanel.js';
-import { removePerson, clearAll, createExtraLink, removeExtraLink } from './actions.js';
-import { startLinkPickMode, cancelLinkPickMode, handleLinkPickClick } from './linkMode.js';
-import { startMergePickMode, cancelMergePickMode, handleMergePickClick } from './mergeMode.js';
+import { addPerson, startConnectMode, cancelConnectMode, addDropdown } from './addPanel.js';
+import { removePerson, clearAll, removeExtraLink } from './actions.js';
+import { cancelLinkPickMode, handleLinkPickClick } from './linkMode.js';
+import { cancelMergePickMode, handleMergePickClick } from './mergeMode.js';
 import { showBubble, hideBubble } from './bubble.js';
 import { toggleMapView } from './mapView.js';
-import './tutorial.js';
+import { startTutorial } from './tutorial.js';
+import { RELATIONSHIP_TYPES } from './constants.js';
+import { getColor, capitalize } from './helpers.js';
 
 // ── Node click handler ────────────────────────────────────────────────────────
 
@@ -58,32 +60,9 @@ window.addEventListener('resize', () => {
   getSimulation()?.alpha(0.3).restart();
 });
 
-// ── Expose globals for inline onclick handlers ────────────────────────────────
+// ── Overflow menus ────────────────────────────────────────────────────────────
 
-Object.assign(window, {
-  openEdit, cancelEdit, saveEdit,
-  addPerson, cancelConnectMode, clearAddPanel,
-  startConnectMode, startLinkPickMode, cancelLinkPickMode,
-  removePerson, clearAll,
-  cancelMergePickMode,
-  removeExtraLink, createExtraLink,
-  exportJSON, triggerNetworkImport, shareAsURL, untangleNodes, toggleMapView,
-  showQRCode, hideQRCode,
-  showImportModal, hideImportModal, importFromURLInput,
-  importFromURL: (nodeId) => {
-    const url = document.getElementById('sp-url-input')?.value?.trim();
-    if (url) importNetworkFromURL(nodeId, url);
-  },
-  toggleTypeDropdown:     e => addDropdown.toggle(e),
-  selectType:             v => addDropdown.select(v),
-  toggleEditTypeDropdown: e => editDropdown.toggle(e),
-  selectEditType:         v => editDropdown.select(v),
-});
-
-// ── Overflow menu ─────────────────────────────────────────────────────────────
-
-function toggleOverflowMenu(e) {
-  e.stopPropagation();
+function toggleOverflowMenu() {
   document.getElementById('io-overflow-menu').classList.toggle('open');
 }
 
@@ -91,33 +70,90 @@ function closeOverflowMenu() {
   document.getElementById('io-overflow-menu').classList.remove('open');
 }
 
-function togglePanelOverflow(e) {
-  e.stopPropagation();
-  e.currentTarget.closest('.tt-overflow').querySelector('.tt-overflow-menu').classList.toggle('open');
+function togglePanelOverflow(el) {
+  el.closest('.tt-overflow').querySelector('.tt-overflow-menu').classList.toggle('open');
 }
 
 function closePanelOverflow() {
   document.querySelectorAll('.tt-overflow-menu.open').forEach(m => m.classList.remove('open'));
 }
 
-Object.assign(window, { toggleOverflowMenu, closeOverflowMenu, togglePanelOverflow, closePanelOverflow });
+// ── Declarative click actions ─────────────────────────────────────────────────
+// Elements opt in with data-action="name" (plus data-* arguments). A single
+// delegated listener dispatches to the matching handler, so the markup carries no
+// inline JS and dynamically-rendered HTML works without per-render wiring.
+// Handlers receive (element, event).
+
+const ACTIONS = {
+  startTutorial,
+  untangleNodes,
+  shareAsURL,
+  showQRCode,
+  clearAll,
+  exportJSON,
+  restoreJSON:    () => document.getElementById('import-input').click(),
+  toggleOverflowMenu,
+  toggleMapView,
+  addPerson,
+  cancelEdit,
+  saveEdit,
+  cancelLinkPickMode,
+  cancelMergePickMode,
+  importFromURLInput,
+
+  // Arguments are read from data-* attributes on the clicked element.
+  openEdit:             el => openEdit(el.dataset.id),
+  removePerson:         el => removePerson(el.dataset.id),
+  showImportModal:      el => showImportModal(el.dataset.id),
+  triggerNetworkImport: el => triggerNetworkImport(el.dataset.id),
+  removeExtraLink:      el => removeExtraLink(el.dataset.idA, el.dataset.idB),
+  togglePanelOverflow:  el => togglePanelOverflow(el),
+
+  // Backdrop / close: only fire when the click lands on the element itself, so a
+  // click inside the modal card is ignored (replaces the old stopPropagation).
+  hideQRCode:      (el, e) => { if (e.target === el) hideQRCode(); },
+  hideImportModal: (el, e) => { if (e.target === el) hideImportModal(); },
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const handler = ACTIONS[el.dataset.action];
+  if (handler) handler(el, e);
+});
 
 // ── Close dropdowns and menus on outside click ────────────────────────────────
+// A menu stays open only while its own trigger button is clicked; any other click
+// closes it.
 
-document.addEventListener('click', () => {
+document.addEventListener('click', e => {
   if (addDropdown.isOpen())  addDropdown.close();
   if (editDropdown.isOpen()) editDropdown.close();
-  closeOverflowMenu();
-  closePanelOverflow();
+  if (!e.target.closest('#io-overflow-btn')) closeOverflowMenu();
+  if (!e.target.closest('.tt-overflow-btn')) closePanelOverflow();
 });
+
+// ── Test hooks ────────────────────────────────────────────────────────────────
+// The e2e suite cancels interaction modes directly because synthetic SVG clicks
+// can be swallowed by the D3 zoom layer. These are the only globals we expose.
+Object.assign(window, { cancelConnectMode, cancelLinkPickMode });
 
 // ── File input wiring ─────────────────────────────────────────────────────────
 
 document.getElementById('import-input').addEventListener('change', importJSON);
 document.getElementById('import-network-input').addEventListener('change', importNetworkJSON);
 
+// ── Legend (generated from the relationship-type constants) ──────────────────
+
+function renderLegend() {
+  document.getElementById('legend').innerHTML = RELATIONSHIP_TYPES.map(t =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${getColor(t)}"></div>${capitalize(t)}</div>`
+  ).join('');
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 
+renderLegend();
 loadFromStorage();
 rebuildLinks();
 buildGraph();

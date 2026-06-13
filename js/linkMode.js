@@ -15,7 +15,7 @@ export function startLinkPickMode(fromId) {
     <div class="tt-name" style="color:${getColor(from.type)}">${from.name}</div>
     <div class="tt-row" style="margin-top:8px;">Click any other node to link it to <strong>${from.name}</strong>.</div>
     <div class="tt-actions">
-      <button class="btn-tt btn-tt-neutral" onclick="cancelLinkPickMode()">✕ Cancel</button>
+      <button class="btn-tt btn-tt-neutral" data-action="cancelLinkPickMode">✕ Cancel</button>
     </div>`;
   dom.spEdit.style.display = 'none';
   dom.spView.style.display = 'block';

@@ -39,3 +39,8 @@ export const TYPE_SIZES = {
   other:   32,
   me:      56
 };
+
+// Relationship types offered in the type dropdowns and the legend, in display
+// order. 'me' is excluded — the You node's type is fixed and not user-selectable.
+// Deriving this from TYPE_COLORS keeps colours and the type list in one place.
+export const RELATIONSHIP_TYPES = Object.keys(TYPE_COLORS).filter(t => t !== 'me');

@@ -54,6 +54,11 @@ export function importFromURLInput() {
   importNetworkFromURL(nodeId, url);
 }
 
+// Enter in the URL field submits the import
+document.getElementById('import-url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') importFromURLInput();
+});
+
 // ── Camera scanner ────────────────────────────────────────────────────────────
 
 async function _startScan() {

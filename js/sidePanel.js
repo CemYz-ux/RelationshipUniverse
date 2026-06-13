@@ -22,7 +22,7 @@ export function showPanel(e, d) {
     peers.forEach(p => {
       connHTML += `<span class="tt-conn-chip" style="border-color:${getColor(p.type)}44;color:${getColor(p.type)}cc;">
         ⇌ ${p.name}
-        <button class="tt-conn-remove" onclick="removeExtraLink('${d.id}','${p.id}')">✕</button>
+        <button class="tt-conn-remove" data-action="removeExtraLink" data-id-a="${d.id}" data-id-b="${p.id}">✕</button>
       </span>`;
     });
     connHTML += `</div>`;
@@ -42,13 +42,13 @@ export function showPanel(e, d) {
     ${stdHTML}
     ${connHTML}
     <div class="tt-actions">
-      <button class="btn-tt btn-tt-neutral" onclick="openEdit('${d.id}')">✎ Edit ${isMe ? 'your info' : d.name}</button>
-      ${!isMe ? `<button class="btn-tt btn-tt-danger" onclick="removePerson('${d.id}')">Remove ${d.name}</button>` : ''}
-      <button class="btn-tt btn-tt-import" onclick="showImportModal('${d.id}')">↑ Import via link or QR</button>
+      <button class="btn-tt btn-tt-neutral" data-action="openEdit" data-id="${d.id}">✎ Edit ${isMe ? 'your info' : d.name}</button>
+      ${!isMe ? `<button class="btn-tt btn-tt-danger" data-action="removePerson" data-id="${d.id}">Remove ${d.name}</button>` : ''}
+      <button class="btn-tt btn-tt-import" data-action="showImportModal" data-id="${d.id}">↑ Import via link or QR</button>
       <div class="tt-overflow">
-        <button class="btn-tt btn-tt-neutral tt-overflow-btn" onclick="togglePanelOverflow(event)">⋯ More</button>
+        <button class="btn-tt btn-tt-neutral tt-overflow-btn" data-action="togglePanelOverflow">⋯ More</button>
         <div class="tt-overflow-menu">
-          <button class="overflow-item" onclick="triggerNetworkImport('${d.id}'); closePanelOverflow()">↑ Import ${isMe ? 'your' : d.name + "'s"} network (JSON)</button>
+          <button class="overflow-item" data-action="triggerNetworkImport" data-id="${d.id}">↑ Import ${isMe ? 'your' : d.name + "'s"} network (JSON)</button>
         </div>
       </div>
     </div>`;

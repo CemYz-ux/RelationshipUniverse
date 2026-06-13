@@ -3,6 +3,14 @@ import { getColor, getSize, getStdStatus } from './helpers.js';
 import { TYPE_EMOJIS } from './constants.js';
 import { buildAdjacency, buildSpanningTree, orderSiblings, computeRadialLayout } from './layout.js';
 
+// ── Force-simulation tuning ───────────────────────────────────────────────────
+
+const LINK_DISTANCE   = 180;   // resting length of each connection
+const LINK_STRENGTH   = 0.4;   // how strongly links pull connected nodes together
+const CHARGE_STRENGTH = -300;  // node-to-node repulsion (negative = repel)
+const COLLISION_PAD   = 20;    // extra space around a node's radius for collision
+const UNTANGLE_HOLD_MS = 800;  // how long untangle pins nodes before releasing them
+
 // ── Dimensions ────────────────────────────────────────────────────────────────
 
 export let width  = dom.container.offsetWidth;
@@ -122,9 +130,9 @@ export function buildGraph() {
   if (simulation) simulation.stop();
 
   simulation = d3.forceSimulation(state.nodes)
-    .force('link', d3.forceLink(state._links || []).id(d => d.id).distance(180).strength(0.4))
-    .force('charge', d3.forceManyBody().strength(-300))
-    .force('collision', d3.forceCollide().radius(d => getSize(d.type) + 20))
+    .force('link', d3.forceLink(state._links || []).id(d => d.id).distance(LINK_DISTANCE).strength(LINK_STRENGTH))
+    .force('charge', d3.forceManyBody().strength(CHARGE_STRENGTH))
+    .force('collision', d3.forceCollide().radius(d => getSize(d.type) + COLLISION_PAD))
     .on('tick', ticked);
 
   // In map mode the simulation must not run — node positions are managed by
@@ -179,6 +187,6 @@ export function untangleNodes() {
   setTimeout(() => {
     state.nodes.forEach(n => { if (n.id !== 'me') { n.fx = null; n.fy = null; } });
     simulation.alpha(0.1).restart();
-  }, 800);
+  }, UNTANGLE_HOLD_MS);
 }
 

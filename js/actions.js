@@ -1,18 +1,8 @@
 import { state } from './state.js';
-import { buildGraph, rebuildLinks, getSimulation } from './graph.js';
+import { buildGraph, rebuildLinks } from './graph.js';
 import { saveToStorage } from './storage.js';
 import { hidePanel, showPanel } from './sidePanel.js';
-import { refreshMapIfActive } from './mapView.js';
-
-// In map view the simulation must stay stopped; reposition nodes on the map instead.
-function restartOrRefresh(alpha = 0.3) {
-  if (state.mapViewActive) {
-    getSimulation()?.stop();
-    refreshMapIfActive();
-  } else {
-    getSimulation().alpha(alpha).restart();
-  }
-}
+import { restartOrRefresh } from './sim.js';
 
 export function removePerson(id) {
   state.nodes      = state.nodes.filter(n => n.id !== id);

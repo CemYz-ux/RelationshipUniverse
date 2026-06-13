@@ -29,7 +29,7 @@ async function nodeId(page, name) {
 
 /** Click the Untangle button and wait for the animation to settle. */
 async function clickUntangle(page) {
-  await page.locator('button[onclick="untangleNodes()"]').click();
+  await page.locator('#btn-untangle').click();
   await page.waitForTimeout(1000); // wait for positions + simulation cooldown
 }
 
@@ -46,15 +46,15 @@ test.describe('Untangle button', () => {
   });
 
   test('Untangle button is visible in the toolbar', async ({ page }) => {
-    await expect(page.locator('button[onclick="untangleNodes()"]')).toBeVisible();
+    await expect(page.locator('#btn-untangle')).toBeVisible();
   });
 
   test('Untangle button has the correct label', async ({ page }) => {
-    await expect(page.locator('button[onclick="untangleNodes()"]')).toContainText('Untangle');
+    await expect(page.locator('#btn-untangle')).toContainText('Untangle');
   });
 
   test('Untangle button has a descriptive title attribute', async ({ page }) => {
-    const title = await page.locator('button[onclick="untangleNodes()"]').getAttribute('title');
+    const title = await page.locator('#btn-untangle').getAttribute('title');
     expect(title).toBeTruthy();
   });
 
